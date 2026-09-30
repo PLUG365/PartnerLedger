@@ -2,6 +2,10 @@
 
 取引先・担当者・契約・名刺を1か所で管理し、大事な変更は承認を通してから反映する Power Platform アプリです。
 
+[![PartnerLedger の紹介動画（YouTube）](https://img.youtube.com/vi/rEq5W_ptPPQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=rEq5W_ptPPQ)
+
+▶ 紹介動画：[PartnerLedger ― 取引先・名刺・契約・承認を、ひとつに](https://www.youtube.com/watch?v=rEq5W_ptPPQ)（YouTube・PLUG Channel）
+
 *English summary is at the [end of this page](#english-summary).*
 
 ## できること
@@ -75,5 +79,7 @@ PartnerLedger is a Power Platform app for managing business partners, their cont
 - **Security**: four security roles plus per-partner sharing. No dedicated application user is required.
 
 To install, download the managed solution from [Releases](../../releases), import it into an environment with Dataverse and follow the [import guide](docs/import-guide.md) (in Japanese). For development, run `npm ci` and `npm run check` at the repository root; see the [development guide](docs/development.md) (in Japanese) to customize the app in your own environment. On Windows, clone with `git clone -c core.longpaths=true` because some solution file names are long.
+
+Demo video (in Japanese): https://www.youtube.com/watch?v=rEq5W_ptPPQ
 
 The documentation is written in Japanese. Licensed under the [MIT License](LICENSE).
