@@ -6,7 +6,7 @@
       <LocalizedName description="PartnerLedger" languagecode="1041" />
     </LocalizedNames>
     <Descriptions />
-    <Version>0.1.0.5</Version>
+    <Version>0.1.0.6</Version>
     <Managed>0</Managed>
     <Publisher>
       <UniqueName>pl_partnerledger</UniqueName>
