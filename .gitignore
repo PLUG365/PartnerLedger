@@ -1,0 +1,52 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+*.local
+.env
+.env.*
+!.env.example
+.mcp.json
+.codex/
+.power/
+power.config.json
+apps/pc/src/generated/
+*.log
+.artifacts/
+plugins/**/bin/
+plugins/**/obj/
+.claude/settings.local.json
+
+# Local tool state and validation scratch files
+.flowagent/
+.playwright-cli/
+output/playwright/
+.tmp/
+.work/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Promo video deliverables (video, audio, storyboard, subtitles). Kept locally, not versioned.
+/promo/
+
+# Python
+__pycache__/
+*.pyc
+
+# 過去の判断・作業記録（この端末のローカルだけに置く。2026-09-27ユーザー判断）
+docs/archive/
+
+# 開発記録と環境固有の指示（この端末のローカルだけに置く。2026-09-30、公開準備のユーザー決定）
+docs/HANDOFF.md
+docs/technical-validation.md
+docs/implementation-plan.md
+docs/START-HERE.md
+docs/ui-review.md
+AGENTS.local.md
+.claude/

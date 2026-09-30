@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Role id="{4bc715a8-0aae-f111-aaac-e4fb1eff79c7}" name="PL 利用者" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsCustomizable>1</IsCustomizable>
+  <IsAutoAssigned>0</IsAutoAssigned>
+  <Description>PartnerLedger専用。PL 利用者。今回の初期適用ではユーザー／チームへ割り当てない。</Description>
+  <RolePrivileges>
+    <RolePrivilege name="prvAppendpl_BulletinPost" level="Basic" />
+    <RolePrivilege name="prvAppendpl_BusinessCardReview" level="Basic" />
+    <RolePrivilege name="prvAppendpl_CaptureBatch" level="Basic" />
+    <RolePrivilege name="prvAppendpl_CardCapture" level="Basic" />
+    <RolePrivilege name="prvAppendpl_CardInputVersion" level="Basic" />
+    <RolePrivilege name="prvAppendpl_Contact" level="Basic" />
+    <RolePrivilege name="prvAppendpl_Contract" level="Basic" />
+    <RolePrivilege name="prvAppendpl_Partner" level="Basic" />
+    <RolePrivilege name="prvAppendpl_PartnerShareSetting" level="Basic" />
+    <RolePrivilege name="prvAppendpl_Request" level="Basic" />
+    <RolePrivilege name="prvAppendpl_SubmissionVersion" level="Basic" />
+    <RolePrivilege name="prvAppendTopl_BulletinPost" level="Basic" />
+    <RolePrivilege name="prvAppendTopl_BusinessCardReview" level="Basic" />
+    <RolePrivilege name="prvAppendTopl_CaptureBatch" level="Basic" />
+    <RolePrivilege name="prvAppendTopl_CardCapture" level="Basic" />
+    <RolePrivilege name="prvAppendTopl_CardInputVersion" level="Basic" />
+    <RolePrivilege name="prvAppendTopl_Contact" level="Basic" />
+    <RolePrivilege name="prvAppendTopl_Contract" level="Basic" />
+    <RolePrivilege name="prvAppendTopl_ContractType" level="Global" />
+    <RolePrivilege name="prvAppendTopl_Partner" level="Local" />
+    <RolePrivilege name="prvAppendTopl_Request" level="Basic" />
+    <RolePrivilege name="prvAppendToTeam" level="Local" />
+    <RolePrivilege name="prvAppendToUser" level="Local" />
+    <RolePrivilege name="prvCreatepl_BulletinPost" level="Basic" />
+    <RolePrivilege name="prvCreatepl_BusinessCardReview" level="Basic" />
+    <RolePrivilege name="prvCreatepl_CaptureBatch" level="Basic" />
+    <RolePrivilege name="prvCreatepl_CardCapture" level="Basic" />
+    <RolePrivilege name="prvCreatepl_CardInputVersion" level="Basic" />
+    <RolePrivilege name="prvCreatepl_Contact" level="Basic" />
+    <RolePrivilege name="prvCreatepl_Contract" level="Basic" />
+    <RolePrivilege name="prvCreatepl_Partner" level="Basic" />
+    <RolePrivilege name="prvCreatepl_PartnerShareSetting" level="Basic" />
+    <RolePrivilege name="prvCreatepl_Request" level="Basic" />
+    <RolePrivilege name="prvCreatepl_SubmissionVersion" level="Basic" />
+    <RolePrivilege name="prvReadpl_BulletinPost" level="Basic" />
+    <RolePrivilege name="prvReadpl_BusinessCardReview" level="Basic" />
+    <RolePrivilege name="prvReadpl_CaptureBatch" level="Basic" />
+    <RolePrivilege name="prvReadpl_CardCapture" level="Basic" />
+    <RolePrivilege name="prvReadpl_CardInputVersion" level="Basic" />
+    <RolePrivilege name="prvReadpl_Contact" level="Basic" />
+    <RolePrivilege name="prvReadpl_Contract" level="Basic" />
+    <RolePrivilege name="prvReadpl_ContractType" level="Global" />
+    <RolePrivilege name="prvReadpl_OcrJob" level="Basic" />
+    <RolePrivilege name="prvReadpl_Partner" level="Basic" />
+    <RolePrivilege name="prvReadpl_PartnerShareSetting" level="Basic" />
+    <RolePrivilege name="prvReadpl_Request" level="Basic" />
+    <RolePrivilege name="prvReadpl_Settings" level="Global" />
+    <RolePrivilege name="prvReadpl_SubmissionVersion" level="Basic" />
+    <RolePrivilege name="prvWritepl_BusinessCardReview" level="Basic" />
+    <RolePrivilege name="prvWritepl_CaptureBatch" level="Basic" />
+    <RolePrivilege name="prvWritepl_CardCapture" level="Basic" />
+    <RolePrivilege name="prvWritepl_CardInputVersion" level="Basic" />
+    <RolePrivilege name="prvWritepl_Contact" level="Basic" />
+    <RolePrivilege name="prvWritepl_Contract" level="Basic" />
+    <RolePrivilege name="prvWritepl_Partner" level="Basic" />
+    <RolePrivilege name="prvWritepl_PartnerShareSetting" level="Basic" />
+    <RolePrivilege name="prvWritepl_Request" level="Basic" />
+    <RolePrivilege name="prvWritepl_SubmissionVersion" level="Basic" />
+  </RolePrivileges>
+</Role>

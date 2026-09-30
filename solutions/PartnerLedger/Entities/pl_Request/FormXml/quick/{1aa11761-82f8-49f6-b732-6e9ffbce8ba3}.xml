@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{1aa11761-82f8-49f6-b732-6e9ffbce8ba3}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{21312972-313E-4FB9-8FEB-09B621927EDF}" IsUserDefined="1">
+          <labels>
+            <label description="" languagecode="1041" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{FC4323FB-33C6-4118-AEFB-2691981C6559}">
+                  <labels>
+                    <label description="全般" languagecode="1041" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{13B4567C-3B64-45E7-BDED-DBA8CBCA74DE}">
+                        <labels>
+                          <label description="" languagecode="1041" />
+                        </labels>
+                        <control id="pl_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pl_Name" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{42587B9B-F6B4-44F0-A947-E96C697AFCB2}">
+                        <labels>
+                          <label description="所有者" languagecode="1041" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="情報" languagecode="1041" />
+    </LocalizedNames>
+  </systemform>
+</forms>

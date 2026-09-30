@@ -1,0 +1,867 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pl_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_OcrJob_created": {
+          "metadata": {
+            "operationMetadataId": "ed2931d9-3b85-444c-af49-c3a84e1fef33"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "pl_ocrjob",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/runas": 3,
+              "subscriptionRequest/name": "2e14490f-edb2-f111-aaac-e4fb1eff79c7:MTA"
+            }
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "runs": 1
+            }
+          }
+        }
+      },
+      "actions": {
+        "If_OcrJob_eligible": {
+          "actions": {
+            "Get_Input_Version": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "dd3ace17-1363-47b0-9510-cd485e4a9f90"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem"
+                },
+                "parameters": {
+                  "entityName": "pl_cardinputversions",
+                  "recordId": "@triggerOutputs()?['body/_pl_cardinputversionlookup_value']",
+                  "$select": "pl_cardinputversionid,_pl_cardcapturelookup_value,pl_versionnumber,pl_imagestatecode,pl_inputstatecode,statecode"
+                }
+              }
+            },
+            "If_Input_And_Image_Ready": {
+              "actions": {
+                "Get_Card_Capture": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "f10d7683-961d-4146-90c0-10d3646cd8a4"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "GetItem"
+                    },
+                    "parameters": {
+                      "entityName": "pl_cardcaptures",
+                      "recordId": "@outputs('Get_Input_Version')?['body/_pl_cardcapturelookup_value']",
+                      "$select": "pl_cardcaptureid,pl_capturestatuscode,pl_currentversionnumber,statecode"
+                    }
+                  }
+                },
+                "If_Capture_Ready": {
+                  "actions": {
+                    "Analyze_Business_Card": {
+                      "runAfter": {
+                        "Download_a_file_or_an_image": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "989cff8a-57e5-4022-b7b5-1309393a33d5",
+                        "flowSystemMetadata": {
+                          "portalOperationId": "aibuilderpredict_businesscard",
+                          "portalOperationGroup": "aibuilder",
+                          "portalOperationApiDisplayNameOverride": "AI Builder",
+                          "portalOperationIconOverride": "https://content.powerapps.com/resource/makerx/static/pauto/images/designeroperations/aibuilderIcon2026.8e878397.png",
+                          "portalOperationBrandColorOverride": "#0A76C4",
+                          "portalOperationApiTierOverride": "Standard"
+                        }
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "aibuilderpredict_businesscard"
+                        },
+                        "parameters": {
+                          "item/requestv2/base64Encoded": "@body('Download_a_file_or_an_image')",
+                          "item/requestv2/mimeType": "Detect automatically",
+                          "recordId": "a0440df3-2656-e911-8194-000d3a6cd5a5",
+                          "item/source": "{\"consumptionSource\":\"PowerAutomate\",\"partnerSource\":\"AIBuilder\",\"consumptionSourceVersion\":\"Flow\",\"partnerSourceVersion\":\"bdd00493-5b72-8d8d-a4fc-ec44b369617e\"}"
+                        }
+                      }
+                    },
+                    "Update_OcrJob_Processing": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "a4c962d6-28a2-4891-8c14-d7ee23171914"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_ocrjobs",
+                          "recordId": "@triggerOutputs()?['body/pl_ocrjobid']",
+                          "item/pl_jobstatuscode": "処理中",
+                          "item/pl_leaseduntil": "@addMinutes(utcNow(), 5)"
+                        }
+                      }
+                    },
+                    "Update_OcrJob_Result_Unknown_On_Claim_Failure": {
+                      "runAfter": {
+                        "Update_OcrJob_Processing": [
+                          "Failed",
+                          "TimedOut"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "27cd3cd0-07a4-47c1-bc5e-d05f2d7d26c0"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_ocrjobs",
+                          "recordId": "@triggerOutputs()?['body/pl_ocrjobid']",
+                          "item/pl_jobstatuscode": "結果不明",
+                          "item/pl_errorcode": "CLAIM_UPDATE_FAILED",
+                          "item/pl_completedat": "@utcNow()",
+                          "item/pl_leaseduntil": null
+                        }
+                      }
+                    },
+                    "Update_Capture_Result_Unknown_On_Claim_Failure": {
+                      "runAfter": {
+                        "Update_OcrJob_Processing": [
+                          "Failed",
+                          "TimedOut"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "2189f3be-f7f9-42b6-aa18-e020e56997a5"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_cardcaptures",
+                          "recordId": "@outputs('Get_Card_Capture')?['body/pl_cardcaptureid']",
+                          "item/pl_capturestatuscode": "結果不明"
+                        }
+                      }
+                    },
+                    "Update_OcrJob_Result_Unknown_On_Image_Failure": {
+                      "runAfter": {
+                        "Download_a_file_or_an_image": [
+                          "Failed",
+                          "TimedOut"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "67a366f9-4f35-4b28-bfcf-aba6840468b5"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_ocrjobs",
+                          "recordId": "@triggerOutputs()?['body/pl_ocrjobid']",
+                          "item/pl_jobstatuscode": "結果不明",
+                          "item/pl_errorcode": "IMAGE_DOWNLOAD_FAILED",
+                          "item/pl_completedat": "@utcNow()",
+                          "item/pl_leaseduntil": null
+                        }
+                      }
+                    },
+                    "Update_Capture_Result_Unknown_On_Image_Failure": {
+                      "runAfter": {
+                        "Download_a_file_or_an_image": [
+                          "Failed",
+                          "TimedOut"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "04669281-f803-46e9-91cf-2aae632e166b"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_cardcaptures",
+                          "recordId": "@outputs('Get_Card_Capture')?['body/pl_cardcaptureid']",
+                          "item/pl_capturestatuscode": "結果不明"
+                        }
+                      }
+                    },
+                    "Update_OcrJob_Result_Unknown_On_AI_Failure": {
+                      "runAfter": {
+                        "Analyze_Business_Card": [
+                          "Failed",
+                          "TimedOut"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "e46fad02-811e-4abd-ac81-599a1bf7711a"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_ocrjobs",
+                          "recordId": "@triggerOutputs()?['body/pl_ocrjobid']",
+                          "item/pl_jobstatuscode": "結果不明",
+                          "item/pl_errorcode": "AI_BUILDER_ERROR",
+                          "item/pl_completedat": "@utcNow()",
+                          "item/pl_leaseduntil": null
+                        }
+                      }
+                    },
+                    "Update_Capture_Result_Unknown_On_AI_Failure": {
+                      "runAfter": {
+                        "Analyze_Business_Card": [
+                          "Failed",
+                          "TimedOut"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "cf84fbfa-49fe-418b-84ef-7bb783ee8299"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_cardcaptures",
+                          "recordId": "@outputs('Get_Card_Capture')?['body/pl_cardcaptureid']",
+                          "item/pl_capturestatuscode": "結果不明"
+                        }
+                      }
+                    },
+                    "If_Business_Card_Recognized": {
+                      "actions": {
+                        "List_Existing_Reviews": {
+                          "runAfter": {},
+                          "metadata": {
+                            "operationMetadataId": "c2362fa9-3bc2-4934-b64c-f37508bb838c"
+                          },
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "host": {
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                              "connectionName": "shared_commondataserviceforapps",
+                              "operationId": "ListRecords"
+                            },
+                            "parameters": {
+                              "entityName": "pl_businesscardreviews",
+                              "$select": "pl_businesscardreviewid",
+                              "$filter": "_pl_cardinputversionlookup_value eq @{triggerOutputs()?['body/_pl_cardinputversionlookup_value']}",
+                              "$top": 1
+                            }
+                          }
+                        },
+                        "If_Review_Not_Exists": {
+                          "actions": {
+                            "Compose_Ocr_Structured_Json": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "48b6e6f7-c1f6-439e-b278-58e2f8277e98"
+                              },
+                              "type": "Compose",
+                              "inputs": {
+                                "addressCity": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/city'],'')",
+                                "addressCountry": "",
+                                "addressPostalCode": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/postalCode'],'')",
+                                "addressPostOfficeBox": "",
+                                "addressState": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/state'],'')",
+                                "addressStreet": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/addressStreet'],'')",
+                                "businessPhone": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/workPhone'],'')",
+                                "companyName": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/companyName'],'')",
+                                "department": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/department'],'')",
+                                "email": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/email'],'')",
+                                "fax": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/fax'],'')",
+                                "firstName": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/firstName'],'')",
+                                "fullAddress": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/fullAddress'],'')",
+                                "fullName": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/fullName'],'')",
+                                "jobTitle": "",
+                                "lastName": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/lastName'],'')",
+                                "mobilePhone": "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/mobilePhone'],'')",
+                                "website": ""
+                              }
+                            },
+                            "Update_OcrJob_Success": {
+                              "runAfter": {
+                                "Compose_Ocr_Structured_Json": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "2e948440-0df7-4f7d-9b29-180faa87fe68"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "UpdateOnlyRecord"
+                                },
+                                "parameters": {
+                                  "entityName": "pl_ocrjobs",
+                                  "recordId": "@triggerOutputs()?['body/pl_ocrjobid']",
+                                  "item/pl_jobstatuscode": "成功",
+                                  "item/pl_ocrresultjson": "@string(outputs('Compose_Ocr_Structured_Json'))",
+                                  "item/pl_completedat": "@utcNow()",
+                                  "item/pl_leaseduntil": null
+                                }
+                              }
+                            },
+                            "Create_Business_Card_Review": {
+                              "runAfter": {
+                                "Update_OcrJob_Success": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "01c58b5c-00b7-4784-bf1f-10f5488f95ad"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "CreateRecord"
+                                },
+                                "parameters": {
+                                  "entityName": "pl_businesscardreviews",
+                                  "item/pl_CardInputVersionLookup@odata.bind": "@concat('/pl_cardinputversions(',triggerOutputs()?['body/_pl_cardinputversionlookup_value'],')')",
+                                  "item/pl_name": "@concat('OCR-',triggerOutputs()?['body/pl_ocrjobid'])",
+                                  "item/pl_reviewstatuscode": "確認編集中",
+                                  "item/pl_correctedfieldsjson": "@string(outputs('Compose_Ocr_Structured_Json'))"
+                                }
+                              }
+                            },
+                            "Update_Capture_Review_Ready": {
+                              "runAfter": {
+                                "Create_Business_Card_Review": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "ec933fee-57f6-4b37-b574-a755a81c80ff"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "UpdateOnlyRecord"
+                                },
+                                "parameters": {
+                                  "entityName": "pl_cardcaptures",
+                                  "recordId": "@outputs('Get_Card_Capture')?['body/pl_cardcaptureid']",
+                                  "item/pl_capturestatuscode": "確認待ち"
+                                }
+                              }
+                            },
+                            "Reconcile_OcrJob_After_Write_Failure": {
+                              "runAfter": {
+                                "Update_Capture_Review_Ready": [
+                                  "Failed",
+                                  "TimedOut",
+                                  "Skipped"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "31299093-a4bc-40c4-a1ba-c7c95e0b939e"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "UpdateOnlyRecord"
+                                },
+                                "parameters": {
+                                  "entityName": "pl_ocrjobs",
+                                  "recordId": "@triggerOutputs()?['body/pl_ocrjobid']",
+                                  "item/pl_errorcode": "RECONCILE_AFTER_WRITE_FAILURE",
+                                  "item/pl_jobstatuscode": "結果不明",
+                                  "item/pl_completedat": "@utcNow()",
+                                  "item/pl_leaseduntil": null
+                                }
+                              }
+                            },
+                            "Reconcile_Capture_After_Write_Failure": {
+                              "runAfter": {
+                                "Reconcile_OcrJob_After_Write_Failure": [
+                                  "Succeeded",
+                                  "Failed",
+                                  "TimedOut"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "6f5c7212-62ed-4040-9918-ce0cb1d40b6e"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "UpdateOnlyRecord"
+                                },
+                                "parameters": {
+                                  "entityName": "pl_cardcaptures",
+                                  "recordId": "@outputs('Get_Card_Capture')?['body/pl_cardcaptureid']",
+                                  "item/pl_capturestatuscode": "結果不明"
+                                }
+                              }
+                            }
+                          },
+                          "runAfter": {
+                            "List_Existing_Reviews": [
+                              "Succeeded"
+                            ]
+                          },
+                          "else": {
+                            "actions": {
+                              "Skip_Existing_Review": {
+                                "runAfter": {
+                                  "Reconcile_Capture_Result_Unknown": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "537a7856-20a9-4e27-8a59-82acc1ee11e7"
+                                },
+                                "type": "Compose",
+                                "inputs": "入力版に紐付くReviewが既に存在するため、重複作成を行いません。"
+                              },
+                              "Reconcile_OcrJob_Result_Unknown": {
+                                "runAfter": {},
+                                "metadata": {
+                                  "operationMetadataId": "2d15f0bd-c84d-4b8b-bf90-bc186478312e"
+                                },
+                                "type": "OpenApiConnection",
+                                "inputs": {
+                                  "host": {
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                    "connectionName": "shared_commondataserviceforapps",
+                                    "operationId": "UpdateOnlyRecord"
+                                  },
+                                  "parameters": {
+                                    "entityName": "pl_ocrjobs",
+                                    "recordId": "@triggerOutputs()?['body/pl_ocrjobid']",
+                                    "item/pl_jobstatuscode": "結果不明",
+                                    "item/pl_errorcode": "REVIEW_EXISTS_RECONCILE_REQUIRED",
+                                    "item/pl_completedat": "@utcNow()",
+                                    "item/pl_leaseduntil": null
+                                  }
+                                }
+                              },
+                              "Reconcile_Capture_Result_Unknown": {
+                                "runAfter": {
+                                  "Reconcile_OcrJob_Result_Unknown": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "7a0bd832-c84f-417b-b259-9b604e246bca"
+                                },
+                                "type": "OpenApiConnection",
+                                "inputs": {
+                                  "host": {
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                    "connectionName": "shared_commondataserviceforapps",
+                                    "operationId": "UpdateOnlyRecord"
+                                  },
+                                  "parameters": {
+                                    "entityName": "pl_cardcaptures",
+                                    "recordId": "@outputs('Get_Card_Capture')?['body/pl_cardcaptureid']",
+                                    "item/pl_capturestatuscode": "結果不明"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "expression": {
+                            "equals": [
+                              "@length(outputs('List_Existing_Reviews')?['body/value'])",
+                              0
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "de4b8806-a6c1-4057-a1e2-8d19bfe57551"
+                          },
+                          "type": "If"
+                        }
+                      },
+                      "runAfter": {
+                        "Analyze_Business_Card": [
+                          "Succeeded"
+                        ]
+                      },
+                      "else": {
+                        "actions": {
+                          "Update_OcrJob_Failed_No_Business_Card_Data": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "6044eda8-3146-4f96-915e-e2d9d5037466"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "host": {
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                "connectionName": "shared_commondataserviceforapps",
+                                "operationId": "UpdateOnlyRecord"
+                              },
+                              "parameters": {
+                                "entityName": "pl_ocrjobs",
+                                "recordId": "@triggerOutputs()?['body/pl_ocrjobid']",
+                                "item/pl_jobstatuscode": "失敗",
+                                "item/pl_errorcode": "NO_BUSINESS_CARD_DATA",
+                                "item/pl_completedat": "@utcNow()",
+                                "item/pl_leaseduntil": null
+                              }
+                            }
+                          },
+                          "Update_Capture_Failed_No_Business_Card_Data": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "3c59c0dc-87e1-46a6-8196-188dcdd13254"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "host": {
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                "connectionName": "shared_commondataserviceforapps",
+                                "operationId": "UpdateOnlyRecord"
+                              },
+                              "parameters": {
+                                "entityName": "pl_cardcaptures",
+                                "recordId": "@outputs('Get_Card_Capture')?['body/pl_cardcaptureid']",
+                                "item/pl_capturestatuscode": "失敗"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "expression": {
+                        "or": [
+                          {
+                            "not": {
+                              "equals": [
+                                "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/fullName'],'')",
+                                ""
+                              ]
+                            }
+                          },
+                          {
+                            "not": {
+                              "equals": [
+                                "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/companyName'],'')",
+                                ""
+                              ]
+                            }
+                          },
+                          {
+                            "not": {
+                              "equals": [
+                                "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/email'],'')",
+                                ""
+                              ]
+                            }
+                          },
+                          {
+                            "not": {
+                              "equals": [
+                                "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/workPhone'],'')",
+                                ""
+                              ]
+                            }
+                          },
+                          {
+                            "not": {
+                              "equals": [
+                                "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/mobilePhone'],'')",
+                                ""
+                              ]
+                            }
+                          },
+                          {
+                            "not": {
+                              "equals": [
+                                "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/fullAddress'],'')",
+                                ""
+                              ]
+                            }
+                          },
+                          {
+                            "not": {
+                              "equals": [
+                                "@coalesce(outputs('Analyze_Business_Card')?['body/responsev2/predictionOutput/contact/department'],'')",
+                                ""
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "7b11f42a-e038-4edd-a0cc-8b72beb829e5"
+                      },
+                      "type": "If"
+                    },
+                    "Download_a_file_or_an_image": {
+                      "runAfter": {
+                        "Update_OcrJob_Processing": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c11df489-f918-4622-8840-12a719c9dd16"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "GetEntityFileImageFieldContent"
+                        },
+                        "parameters": {
+                          "entityName": "pl_cardcaptures",
+                          "recordId": "@outputs('Get_Card_Capture')?['body/pl_cardcaptureid']",
+                          "fileImageFieldName": "pl_imagefile"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Get_Card_Capture": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {
+                      "Skip_Capture_Not_Ready": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "3ed43965-c9a5-432c-8365-2f7fa5c48f4a"
+                        },
+                        "type": "Compose",
+                        "inputs": "Captureが未登録または無効のため、Business Card OCRを呼び出しません。"
+                      }
+                    }
+                  },
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@outputs('Get_Card_Capture')?['body/statecode']",
+                          0
+                        ]
+                      },
+                      {
+                        "equals": [
+                          "@outputs('Get_Card_Capture')?['body/pl_capturestatuscode']",
+                          "未登録"
+                        ]
+                      },
+                      {
+                        "equals": [
+                          "@outputs('Get_Card_Capture')?['body/pl_currentversionnumber']",
+                          "@outputs('Get_Input_Version')?['body/pl_versionnumber']"
+                        ]
+                      }
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "68f1f6a2-0880-450d-88c3-dcf38dc979df"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {
+                "Get_Input_Version": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "Skip_Input_Not_Ready": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "6605b8e6-1877-4a48-b81d-88bcf863d4a8"
+                    },
+                    "type": "Compose",
+                    "inputs": "入力版が固定済みでない、画像到着未確認、またはCapture参照欠落のため、Business Card OCRを呼び出しません。"
+                  }
+                }
+              },
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@outputs('Get_Input_Version')?['body/statecode']",
+                      0
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@outputs('Get_Input_Version')?['body/pl_imagestatecode']",
+                      "画像到着確認済み"
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@outputs('Get_Input_Version')?['body/pl_inputstatecode']",
+                      "固定済み"
+                    ]
+                  },
+                  {
+                    "not": {
+                      "equals": [
+                        "@coalesce(outputs('Get_Input_Version')?['body/_pl_cardcapturelookup_value'],'')",
+                        ""
+                      ]
+                    }
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "10ade1c9-875c-4631-9b11-5961940dddfc"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Get_a_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Skip_OcrJob_Not_Eligible": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "08b028f7-6ad9-405b-9b07-1f449aa3b167"
+                },
+                "type": "Compose",
+                "inputs": "OCRジョブが待機状態でない、無効、または入力版参照欠落のため、Business Card OCRを呼び出しません。"
+              }
+            }
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_a_row_by_ID')?['body/statecode']",
+                  0
+                ]
+              },
+              {
+                "equals": [
+                  "@outputs('Get_a_row_by_ID')?['body/pl_jobstatuscode']",
+                  "待機"
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@coalesce(outputs('Get_a_row_by_ID')?['body/_pl_cardinputversionlookup_value'],'')",
+                    ""
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a003eecf-9ee8-42fc-8fcb-54a503770e84"
+          },
+          "type": "If"
+        },
+        "Get_a_row_by_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "e7993df5-1f78-4e04-970f-6f340d679da4"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem"
+            },
+            "parameters": {
+              "entityName": "pl_ocrjobs",
+              "recordId": "@triggerOutputs()?['body/pl_ocrjobid']"
+            }
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{40450cdb-4fd0-43c5-a1b1-29d960316f54}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="pl_name" select="1" icon="1" preview="1">
+        <row name="result" id="pl_contracttypeid">
+          <cell name="pl_name" width="300" />
+          <cell name="createdon" width="125" />
+          <cell name="pl_displayorder" width="150" />
+          <cell name="pl_selectable" width="150" />
+          <cell name="pl_lifecyclecode" width="150" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="pl_contracttype">
+          <attribute name="pl_contracttypeid" />
+          <attribute name="pl_name" />
+          <attribute name="createdon" />
+          <order attribute="pl_name" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="pl_displayorder" />
+          <attribute name="pl_selectable" />
+          <attribute name="pl_lifecyclecode" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="アクティブな契約種類s" languagecode="1041" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

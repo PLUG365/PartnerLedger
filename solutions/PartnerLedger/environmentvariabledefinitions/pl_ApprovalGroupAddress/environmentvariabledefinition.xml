@@ -1,0 +1,15 @@
+<environmentvariabledefinition schemaname="pl_ApprovalGroupAddress">
+  <description default="承認依頼を受け取るMicrosoft 365グループのメールアドレス。資格情報などの秘密情報を含めない">
+    <label description="Email address of the Microsoft 365 group that receives approval requests. Do not include credentials or other secrets." languagecode="1033" />
+    <label description="承認依頼を受け取るMicrosoft 365グループのメールアドレス。資格情報などの秘密情報を含めない" languagecode="1041" />
+  </description>
+  <displayname default="PartnerLedger 承認グループ宛先">
+    <label description="PartnerLedger approval group address" languagecode="1033" />
+    <label description="PartnerLedger 承認グループ宛先" languagecode="1041" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>1</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

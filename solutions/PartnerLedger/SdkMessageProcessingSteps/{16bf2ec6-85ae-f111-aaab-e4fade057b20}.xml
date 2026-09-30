@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="pl_partner Create PostOperation: PartnerAccessBootstrap" SdkMessageProcessingStepId="{16bf2ec6-85ae-f111-aaab-e4fade057b20}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+  <PluginTypeName>PartnerLedger.Plugins.PartnerAccessBootstrapPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66</PluginTypeName>
+  <PluginTypeId>da4ac036-74ae-f111-aaab-e4fade057b20</PluginTypeId>
+  <PrimaryEntity>pl_partner</PrimaryEntity>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes></FilteringAttributes>
+  <InvocationSource>1</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>40</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages />
+</SdkMessageProcessingStep>

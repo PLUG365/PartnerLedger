@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{6cb20f06-bdea-44f4-b383-4bfe1b5335a5}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab name="general" verticallayout="true" id="{F9D5ECDA-9CA0-4380-96E5-BB06357DF75B}" IsUserDefined="0">
+          <labels>
+            <label description="" languagecode="1041" />
+          </labels>
+          <columns>
+            <column width="25%">
+              <sections>
+                <section name="ColorStrip" showlabel="false" showbar="false" columns="1" IsUserDefined="0" id="{2FEA2B69-C5E0-45B7-8423-1DE60116B658}">
+                  <labels>
+                    <label description="ColorStrip" languagecode="1041" />
+                  </labels>
+                </section>
+              </sections>
+            </column>
+            <column width="75%">
+              <sections>
+                <section name="CardHeader" showlabel="false" showbar="false" columns="111" id="{FC505D71-2357-47BE-8D64-0FE4CC93926D}" IsUserDefined="0">
+                  <labels>
+                    <label description="ヘッダー" languagecode="1041" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{5B0AB28F-1882-494D-9876-1DDAC5D1B14A}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="ステータス" languagecode="1041" />
+                        </labels>
+                        <control id="statuscode" classid="{5D68B988-0661-4db2-BC3E-17598AD3BE6C}" datafieldname="statuscode" disabled="false" />
+                      </cell>
+                      <cell id="{FDC7651F-4BB4-49FB-BC99-0A57BC0F6BF5}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="" languagecode="1041" />
+                        </labels>
+                      </cell>
+                      <cell id="{A0A4CEEA-F51D-478A-BC1D-FD61BD3AA748}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="" languagecode="1041" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="CardDetails" showlabel="false" showbar="false" columns="1" id="{37C298A6-74CB-47CE-8099-C54BAB688D97}" IsUserDefined="0">
+                  <labels>
+                    <label description="詳細" languagecode="1041" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{B549FC61-ACB3-4AD0-B280-1EE703CAE87B}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="" languagecode="1041" />
+                        </labels>
+                        <control id="pl_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pl_Name" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="CardFooter" showlabel="false" columns="1111" showbar="false" id="{A4E254D9-3520-4652-86FE-86433AFADF57}" IsUserDefined="0">
+                  <labels>
+                    <label description="フッター" languagecode="1041" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{5B9ECFB7-362C-4E48-9B29-BE056F4B0C69}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="所有者" languagecode="1041" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" disabled="false" />
+                      </cell>
+                      <cell id="{9EF7D99A-E6F3-4BFE-A149-4C221B25B836}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="作成日" languagecode="1041" />
+                        </labels>
+                        <control id="createdon" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="createdon" disabled="false" />
+                      </cell>
+                      <cell id="{64CF0517-FE58-43E5-BA40-0CD163C37B07}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="" languagecode="1041" />
+                        </labels>
+                      </cell>
+                      <cell id="{34A24BCC-455C-4C9A-8E51-49F74526D3A1}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="" languagecode="1041" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="情報" languagecode="1041" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="このエンティティ用のカード フォームです。" languagecode="1041" />
+    </Descriptions>
+  </systemform>
+</forms>

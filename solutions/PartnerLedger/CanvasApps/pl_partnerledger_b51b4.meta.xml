@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>pl_partnerledger_b51b4</Name>
+  <AppVersion>2026-09-29T17:13:35Z</AppVersion>
+  <Status>Ready</Status>
+  <CreatedByClientVersion>0.0.0.0</CreatedByClientVersion>
+  <MinClientVersion>0.0.0.0</MinClientVersion>
+  <Tags>{}</Tags>
+  <IsCdsUpgraded>0</IsCdsUpgraded>
+  <GalleryItemId xsi:nil="true"></GalleryItemId>
+  <BackgroundColor>RGBA(255,255,255,1)</BackgroundColor>
+  <DisplayName>PartnerLedger</DisplayName>
+  <Description>PartnerLedger PC Code App</Description>
+  <CommitMessage xsi:nil="true"></CommitMessage>
+  <Publisher xsi:nil="true"></Publisher>
+  <AuthorizationReferences>[]</AuthorizationReferences>
+  <ConnectionReferences>{}</ConnectionReferences>
+  <DatabaseReferences>{"default.cds":{"databaseDetails":{"referenceType":"Environmental","environmentName":"default.cds","overrideValues":{"status":"NotSpecified","environmentVariableName":""}},"dataSources":{"environment_39a902ba":{"entitySetName":"Environment","logicalName":"environment_39a902ba"},"___s":{"entitySetName":"pl_partners","logicalName":"pl_partner"},"_61961a55":{"entitySetName":"systemusers","logicalName":"systemuser"},"_0ab314f8":{"entitySetName":"teams","logicalName":"team"},"__s":{"entitySetName":"pl_requests","logicalName":"pl_request"},"___s_1":{"entitySetName":"pl_submissionversions","logicalName":"pl_submissionversion"},"_a773cd81":{"entitySetName":"pl_partnersharesettings","logicalName":"pl_partnersharesetting"},"___s_2":{"entitySetName":"pl_contacts","logicalName":"pl_contact"},"__s_1":{"entitySetName":"pl_contracts","logicalName":"pl_contract"},"____s":{"entitySetName":"pl_contracttypes","logicalName":"pl_contracttype"},"________s":{"entitySetName":"pl_settingses","logicalName":"pl_settings"},"_____s":{"entitySetName":"pl_bulletinposts","logicalName":"pl_bulletinpost"},"_______s":{"entitySetName":"pl_capturebatchs","logicalName":"pl_capturebatch"},"____s_1":{"entitySetName":"pl_cardcaptures","logicalName":"pl_cardcapture"},"ocr_____s":{"entitySetName":"pl_ocrjobs","logicalName":"pl_ocrjob"},"_____s_1":{"entitySetName":"pl_cardinputversions","logicalName":"pl_cardinputversion"},"_____s_2":{"entitySetName":"pl_businesscardreviews","logicalName":"pl_businesscardreview"}}}}</DatabaseReferences>
+  <AppComponents>[]</AppComponents>
+  <AppComponentDependencies>[]</AppComponentDependencies>
+  <CanConsumeAppPass>1</CanConsumeAppPass>
+  <CanvasAppType>4</CanvasAppType>
+  <BypassConsent>0</BypassConsent>
+  <AdminControlBypassConsent>0</AdminControlBypassConsent>
+  <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CdsDependencies>{"cdsdependencies":[{"logicalname":"pl_partner","componenttype":1},{"logicalname":"systemuser","componenttype":1},{"logicalname":"team","componenttype":1},{"logicalname":"pl_request","componenttype":1},{"logicalname":"pl_submissionversion","componenttype":1},{"logicalname":"pl_partnersharesetting","componenttype":1},{"logicalname":"pl_contact","componenttype":1},{"logicalname":"pl_contract","componenttype":1},{"logicalname":"pl_contracttype","componenttype":1},{"logicalname":"pl_settings","componenttype":1},{"logicalname":"pl_bulletinpost","componenttype":1},{"logicalname":"pl_capturebatch","componenttype":1},{"logicalname":"pl_cardcapture","componenttype":1},{"logicalname":"pl_ocrjob","componenttype":1},{"logicalname":"pl_cardinputversion","componenttype":1},{"logicalname":"pl_businesscardreview","componenttype":1}]}</CdsDependencies>
+  <IsCustomizable>1</IsCustomizable>
+  <CodeAppPackageUris>
+    <CodeAppPackageUri>/CanvasApps/pl_partnerledger_b51b4_CodeAppPackages/index.html_ContentType_text/html</CodeAppPackageUri>
+    <CodeAppPackageUri>/CanvasApps/pl_partnerledger_b51b4_CodeAppPackages/assets/index-CpZKgpMc.css_ContentType_text/css</CodeAppPackageUri>
+    <CodeAppPackageUri>/CanvasApps/pl_partnerledger_b51b4_CodeAppPackages/assets/index-D1rYwJcd.js_ContentType_application/javascript</CodeAppPackageUri>
+  </CodeAppPackageUris>
+</CanvasApp>

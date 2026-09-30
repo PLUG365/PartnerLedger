@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{49697dcb-ec86-473a-8f75-77b3e7747a64}</savedqueryid>
+    <layoutxml>
+      <grid name="pl_settingses" jump="pl_name" select="1" icon="1" preview="1">
+        <row name="pl_settings" id="pl_settingsid">
+          <cell name="pl_name" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>2</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="pl_settings">
+          <attribute name="pl_settingsid" />
+          <attribute name="pl_name" />
+          <attribute name="createdon" />
+          <order attribute="pl_name" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="導入設定・設定版関連ビュー" languagecode="1041" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

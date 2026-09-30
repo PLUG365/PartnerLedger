@@ -1,0 +1,359 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pl_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pl_office365outlook"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "timeZone": "Tokyo Standard Time",
+            "startTime": "2026-09-22T08:00:00",
+            "schedule": {
+              "hours": [
+                8
+              ],
+              "minutes": [
+                0
+              ]
+            }
+          },
+          "evaluatedRecurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "timeZone": "Tokyo Standard Time",
+            "startTime": "2026-09-22T08:00:00",
+            "schedule": {
+              "hours": [
+                8
+              ],
+              "minutes": [
+                0
+              ]
+            }
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "NotificationDeliveryWorkDisabled": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "fa73c4ab-5e6f-4f9e-ac7e-6e3ad0a0d5fa"
+          },
+          "type": "Compose",
+          "inputs": "PL-010 delivery worker. Sends via the environment's mapped Office 365 Outlook connection; connector success is recorded as sent, failures become 結果不明, and no automatic retry is performed."
+        },
+        "List_NotificationCandidates": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "97b3cfb2-00a2-4157-928b-9d8600f7bd89"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords"
+            },
+            "parameters": {
+              "entityName": "pl_notifications",
+              "$select": "pl_notificationid,pl_name,pl_channelcode,pl_notificationstatuscode,pl_recipientaddress,pl_targettypecode,pl_targetrecordkey,pl_scheduledat,pl_attemptnumber,createdon,_ownerid_value,pl_targetdueat",
+              "$filter": "statecode eq 0 and pl_channelcode eq 'email' and pl_notificationstatuscode eq '待機' and pl_recipientaddress ne null",
+              "$top": 100,
+              "$orderby": "pl_scheduledat asc"
+            }
+          }
+        },
+        "ForEach_NotificationCandidate": {
+          "foreach": "@body('List_NotificationCandidates')?['value']",
+          "actions": {
+            "Compose_LeaseToken": {
+              "runAfter": {
+                "Compose_NoticeBody": [
+                  "Succeeded"
+                ],
+                "Compose_NoticeSubject": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0ed88eb5-b5b7-4118-ac9a-1d3f3e948ea7"
+              },
+              "type": "Compose",
+              "inputs": "@guid()"
+            },
+            "Claim_Notification": {
+              "runAfter": {
+                "Compose_LeaseToken": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "7ab8af24-149d-420a-98c7-697503155e96"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord"
+                },
+                "parameters": {
+                  "entityName": "pl_notifications",
+                  "recordId": "@items('ForEach_NotificationCandidate')?['pl_notificationid']",
+                  "item": {
+                    "pl_notificationstatuscode": "送信中",
+                    "pl_attemptnumber": "@add(coalesce(items('ForEach_NotificationCandidate')?['pl_attemptnumber'],0),1)",
+                    "pl_processingleasetoken": "@outputs('Compose_LeaseToken')",
+                    "pl_processingleaseuntil": "@addMinutes(utcNow(),10)"
+                  }
+                }
+              }
+            },
+            "Send_Email": {
+              "runAfter": {
+                "Claim_Notification": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9e6d3c2b-1a0f-4e8d-b7c6-5a4f3e2d1c0b"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailV2"
+                },
+                "parameters": {
+                  "emailMessage/To": "@items('ForEach_NotificationCandidate')?['pl_recipientaddress']",
+                  "emailMessage/Subject": "@outputs('Compose_NoticeSubject')",
+                  "emailMessage/Body": "@outputs('Compose_NoticeBody')",
+                  "emailMessage/Importance": "Normal"
+                }
+              }
+            },
+            "Mark_Sent": {
+              "runAfter": {
+                "Send_Email": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "498bf3de-72e8-451c-bf2f-9d1a770a5600"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord"
+                },
+                "parameters": {
+                  "entityName": "pl_notifications",
+                  "recordId": "@items('ForEach_NotificationCandidate')?['pl_notificationid']",
+                  "item": {
+                    "pl_errorcode": "@null",
+                    "pl_sentat": "@utcNow()",
+                    "pl_notificationstatuscode": "送信済み",
+                    "pl_processingleasetoken": "@null",
+                    "pl_processingleaseuntil": "@null"
+                  }
+                }
+              }
+            },
+            "Mark_Unknown_AfterDelivery": {
+              "runAfter": {
+                "Send_Email": [
+                  "Failed",
+                  "TimedOut"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3a775ea2-5986-4524-94dd-049b4c9575f6"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord"
+                },
+                "parameters": {
+                  "entityName": "pl_notifications",
+                  "recordId": "@items('ForEach_NotificationCandidate')?['pl_notificationid']",
+                  "item": {
+                    "pl_errorcode": "delivery-unknown",
+                    "pl_notificationstatuscode": "結果不明",
+                    "pl_processingleasetoken": "@null",
+                    "pl_processingleaseuntil": "@null"
+                  }
+                }
+              }
+            },
+            "Compose_NoticeKind": {
+              "runAfter": {},
+              "type": "Compose",
+              "inputs": "@if(greater(length(split(coalesce(items('ForEach_NotificationCandidate')?['pl_name'], ''), '|')), 3), split(coalesce(items('ForEach_NotificationCandidate')?['pl_name'], ''), '|')[3], '')"
+            },
+            "If_Notice_Contract": {
+              "runAfter": {
+                "Compose_NoticeKind": [
+                  "Succeeded"
+                ]
+              },
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@items('ForEach_NotificationCandidate')?['pl_targettypecode']",
+                  "pl_contract"
+                ]
+              },
+              "actions": {
+                "Get_Notice_Contract": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "GetItem"
+                    },
+                    "parameters": {
+                      "entityName": "pl_contracts",
+                      "recordId": "@items('ForEach_NotificationCandidate')?['pl_targetrecordkey']",
+                      "$select": "pl_name,_pl_partnerlookup_value"
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              }
+            },
+            "Compose_NoticeFacts": {
+              "runAfter": {
+                "If_Notice_Contract": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped",
+                  "TimedOut"
+                ]
+              },
+              "type": "Compose",
+              "inputs": {
+                "isCard": "@equals(items('ForEach_NotificationCandidate')?['pl_targettypecode'], 'pl_cardcapture')",
+                "deadlineLabel": "@if(equals(outputs('Compose_NoticeKind'), 'contract-end'), '契約終了日', if(equals(outputs('Compose_NoticeKind'), 'contract-notice'), '解約通知期限', if(equals(outputs('Compose_NoticeKind'), 'contract-decision'), '更新判断期限', '契約の期限')))",
+                "contractName": "@coalesce(actions('Get_Notice_Contract')?['outputs']?['body']?['pl_name'], '')",
+                "partnerName": "@coalesce(actions('Get_Notice_Contract')?['outputs']?['body']?['_pl_partnerlookup_value@OData.Community.Display.V1.FormattedValue'], '')",
+                "dueDate": "@if(empty(items('ForEach_NotificationCandidate')?['pl_targetdueat']), '', formatDateTime(convertFromUtc(items('ForEach_NotificationCandidate')?['pl_targetdueat'], 'Tokyo Standard Time'), 'yyyy-MM-dd'))",
+                "link": "@if(empty(outputs('Compose_app_uri')), '', if(equals(items('ForEach_NotificationCandidate')?['pl_targettypecode'], 'pl_cardcapture'), concat(first(split(outputs('Compose_app_uri'), '&sourcetime=')), if(contains(outputs('Compose_app_uri'), '?'), '&', '?'), 'captureId=', items('ForEach_NotificationCandidate')?['pl_targetrecordkey']), if(empty(actions('Get_Notice_Contract')?['outputs']?['body']?['_pl_partnerlookup_value']), first(split(outputs('Compose_app_uri'), '&sourcetime=')), concat(first(split(outputs('Compose_app_uri'), '&sourcetime=')), if(contains(outputs('Compose_app_uri'), '?'), '&', '?'), 'partnerId=', actions('Get_Notice_Contract')?['outputs']?['body']?['_pl_partnerlookup_value'], '&partnerTab=contracts'))))"
+              }
+            },
+            "Compose_NoticeSubject": {
+              "runAfter": {
+                "Compose_NoticeFacts": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@if(outputs('Compose_NoticeFacts')?['isCard'], '[PartnerLedger] 処理待ちの名刺があります', concat('[PartnerLedger] ', outputs('Compose_NoticeFacts')?['deadlineLabel'], 'が近づいています', if(empty(outputs('Compose_NoticeFacts')?['contractName']), '', concat('：', outputs('Compose_NoticeFacts')?['contractName']))))"
+            },
+            "Compose_NoticeBody": {
+              "runAfter": {
+                "Compose_NoticeFacts": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@concat(if(outputs('Compose_NoticeFacts')?['isCard'], concat('<p>受け付けてから日数がたっても、処理されていない名刺があります。確認して登録するか、一覧から外してください。</p>', '<p>受付日：', replace(replace(replace(coalesce(outputs('Compose_NoticeFacts')?['dueDate'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '</p>'), concat('<p>', outputs('Compose_NoticeFacts')?['deadlineLabel'], 'が近づいています。</p>', '<p>契約：', if(empty(outputs('Compose_NoticeFacts')?['contractName']), '（契約名を読み込めませんでした）', replace(replace(replace(coalesce(outputs('Compose_NoticeFacts')?['contractName'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;')), '<br>取引先：', replace(replace(replace(coalesce(outputs('Compose_NoticeFacts')?['partnerName'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '<br>', outputs('Compose_NoticeFacts')?['deadlineLabel'], '：', replace(replace(replace(coalesce(outputs('Compose_NoticeFacts')?['dueDate'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '</p>')), if(empty(outputs('Compose_NoticeFacts')?['link']), '', concat('<p><a href=\"', replace(outputs('Compose_NoticeFacts')?['link'], '&', '&amp;'), '\">', if(outputs('Compose_NoticeFacts')?['isCard'], 'PartnerLedgerで名刺を確認する', 'PartnerLedgerを開く'), '</a></p>')), '<p>このメールはPartnerLedgerから自動で送っています。</p>')"
+            }
+          },
+          "runAfter": {
+            "List_NotificationCandidates": [
+              "Succeeded"
+            ],
+            "Compose_app_uri": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0f68755d-3d3c-428c-ac6a-2068937d6ce6"
+          },
+          "type": "Foreach",
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          }
+        },
+        "List_partnerledger_app": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords"
+            },
+            "parameters": {
+              "entityName": "canvasapps",
+              "$select": "appopenuri",
+              "$filter": "name eq 'pl_partnerledger_b51b4'",
+              "$top": 1
+            }
+          }
+        },
+        "Compose_app_uri": {
+          "runAfter": {
+            "List_partnerledger_app": [
+              "Succeeded",
+              "Failed",
+              "TimedOut",
+              "Skipped"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "@coalesce(first(coalesce(body('List_partnerledger_app')?['value'], json('[]')))?['appopenuri'], '')"
+        }
+      },
+      "outputs": {},
+      "description": "PL-010 notification delivery worker. Claims waiting rows, sends through the mapped Office 365 Outlook connection, and records sent or unknown results. Created stopped for acceptance."
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

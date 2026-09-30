@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="pl_partner Update PreOperation: PartnerStandardUpdate" SdkMessageProcessingStepId="{bed8d8a4-1db5-f111-aaad-e4fb1eff79c7}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+  <PluginTypeName>PartnerLedger.Plugins.PartnerStandardUpdatePlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66</PluginTypeName>
+  <PluginTypeId>bdd8d8a4-1db5-f111-aaad-e4fb1eff79c7</PluginTypeId>
+  <PrimaryEntity>pl_partner</PrimaryEntity>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <Description>PartnerLedger standard pl_partner Update boundary for policy-controlled direct changes.</Description>
+  <FilteringAttributes></FilteringAttributes>
+  <InvocationSource>1</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>20</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>0.1.0.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages>
+    <SdkMessageProcessingStepImage Name="PartnerStandardUpdatePreImage">
+      <SdkMessageProcessingStepImageId>{c1d8d8a4-1db5-f111-aaad-e4fb1eff79c7}</SdkMessageProcessingStepImageId>
+      <Attributes>statecode</Attributes>
+      <EntityAlias>PartnerStandardUpdatePreImage</EntityAlias>
+      <ImageType>0</ImageType>
+      <MessagePropertyName>Target</MessagePropertyName>
+      <IsCustomizable>1</IsCustomizable>
+    </SdkMessageProcessingStepImage>
+  </SdkMessageProcessingStepImages>
+</SdkMessageProcessingStep>

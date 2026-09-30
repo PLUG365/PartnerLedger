@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PluginAssembly FullName="PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginAssemblyId="088d1313-74ae-f111-aaab-e4fade057b20" CustomizationLevel="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Description>PartnerLedger access grant/modify/revoke plugins</Description>
+  <IsolationMode>2</IsolationMode>
+  <SourceType>0</SourceType>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <FileName>/PluginAssemblies/PartnerLedgerPlugins-088D1313-74AE-F111-AAAB-E4FADE057B20/PartnerLedgerPlugins.dll</FileName>
+  <PluginTypes>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.BulletinPostAppendOnlyGuardPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="14060ef4-a5b2-f111-aaab-e4fade04470e" Name="PartnerLedger.Plugins.BulletinPostAppendOnlyGuardPlugin">
+      <FriendlyName>BulletinPostAppendOnlyGuardPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.BulletinPostStandardCreatePlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="13060ef4-a5b2-f111-aaab-e4fade04470e" Name="PartnerLedger.Plugins.BulletinPostStandardCreatePlugin">
+      <FriendlyName>BulletinPostStandardCreatePlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.BusinessCardCaptureCreatePlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="d0bdd196-beb2-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.BusinessCardCaptureCreatePlugin">
+      <FriendlyName>BusinessCardCaptureCreatePlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.BusinessCardCaptureOwnerPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="4a47efde-4cb6-f111-aaad-000d3a4003f6" Name="PartnerLedger.Plugins.BusinessCardCaptureOwnerPlugin">
+      <FriendlyName>BusinessCardCaptureOwnerPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.BusinessCardInputVersionCreatePlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="5baf3530-1bb3-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.BusinessCardInputVersionCreatePlugin">
+      <FriendlyName>BusinessCardInputVersionCreatePlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.BusinessCardInputVersionUpdateGuardPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="43435ca5-40b6-f111-aaad-e4fb1eff79c7" Name="PartnerLedger.Plugins.BusinessCardInputVersionUpdateGuardPlugin">
+      <FriendlyName>BusinessCardInputVersionUpdateGuardPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.BusinessCardOcrJobCreatePlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="3d415ca5-40b6-f111-aaad-e4fb1eff79c7" Name="PartnerLedger.Plugins.BusinessCardOcrJobCreatePlugin">
+      <FriendlyName>BusinessCardOcrJobCreatePlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.BusinessCardReviewOwnerPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="4847efde-4cb6-f111-aaad-000d3a4003f6" Name="PartnerLedger.Plugins.BusinessCardReviewOwnerPlugin">
+      <FriendlyName>BusinessCardReviewOwnerPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.ContactStandardCreatePlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="52a22338-8bb0-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.ContactStandardCreatePlugin">
+      <FriendlyName>ContactStandardCreatePlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.ContactStandardUpdateGuardPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="53a22338-8bb0-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.ContactStandardUpdateGuardPlugin">
+      <FriendlyName>ContactStandardUpdateGuardPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.ContractStandardCreatePlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="37861059-b948-4f89-9bad-2232b045d721" Name="PartnerLedger.Plugins.ContractStandardCreatePlugin">
+      <FriendlyName>ContractStandardCreatePlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.ContractStandardUpdatePlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="9860c19a-4db2-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.ContractStandardUpdatePlugin">
+      <FriendlyName>ContractStandardUpdatePlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.PartnerAccessBootstrapPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="da4ac036-74ae-f111-aaab-e4fade057b20" Name="PartnerLedger.Plugins.PartnerAccessBootstrapPlugin">
+      <FriendlyName>PartnerAccessBootstrapPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.PartnerCreateGuardPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="609282ad-83af-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.PartnerCreateGuardPlugin">
+      <Description>Rejects direct pl_partner Create outside the registration API boundary.</Description>
+      <FriendlyName>PartnerCreateGuardPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.PartnerShareSettingProjectionPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="254b1777-15b0-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.PartnerShareSettingProjectionPlugin">
+      <FriendlyName>PartnerLedger.Plugins.PartnerShareSettingProjectionPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.PartnerShareSetupStatusGuardPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="63ca515d-79b3-f111-aaad-e4fb1eff79c7" Name="PartnerLedger.Plugins.PartnerShareSetupStatusGuardPlugin">
+      <FriendlyName>PartnerShareSetupStatusGuardPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.PartnerStandardUpdatePlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="bdd8d8a4-1db5-f111-aaad-e4fb1eff79c7" Name="PartnerLedger.Plugins.PartnerStandardUpdatePlugin">
+      <FriendlyName>PartnerStandardUpdatePlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.StandardApprovalCrudGuardPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="1cc07b00-1ab1-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.StandardApprovalCrudGuardPlugin">
+      <FriendlyName>StandardApprovalCrudGuardPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.StandardApprovalDecisionPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="cff6a812-39b1-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.StandardApprovalDecisionPlugin">
+      <FriendlyName>StandardApprovalDecisionPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.StandardApprovalResultPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="70ad882f-33b1-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.StandardApprovalResultPlugin">
+      <FriendlyName>StandardApprovalResultPlugin</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PartnerLedger.Plugins.StandardApprovalSubmitPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" PluginTypeId="20c4bac4-26b1-f111-aaac-e4fb1eff79c7" Name="PartnerLedger.Plugins.StandardApprovalSubmitPlugin">
+      <FriendlyName>StandardApprovalSubmitPlugin</FriendlyName>
+    </PluginType>
+  </PluginTypes>
+</PluginAssembly>

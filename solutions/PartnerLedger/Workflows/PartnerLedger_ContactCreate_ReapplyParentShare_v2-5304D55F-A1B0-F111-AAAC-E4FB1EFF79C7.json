@@ -1,0 +1,266 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pl_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_contact_created": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "pl_contact",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/runas": 3,
+              "subscriptionRequest/name": "fc38c6c4-9f9a-4f6b-89d2-7fb3c3f3d9a4:MTA"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "If_contact_has_parent": {
+          "actions": {
+            "List_parent_direct_shares": {
+              "runAfter": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords"
+                },
+                "parameters": {
+                  "entityName": "principalobjectaccessset",
+                  "$select": "principalid,principaltypecode,objectid,objecttypecode,accessrightsmask,inheritedaccessrightsmask",
+                  "$filter": "objectid eq @{triggerOutputs()?['body/_pl_partnerlookup_value']} and objecttypecode eq 'pl_partner' and inheritedaccessrightsmask eq 0 and accessrightsmask ne 0",
+                  "$top": 5000
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Reapply_parent_direct_shares": {
+              "foreach": "@outputs('List_parent_direct_shares')?['body/value']",
+              "actions": {
+                "If_supported_direct_share": {
+                  "actions": {
+                    "Build_access_mask": {
+                      "runAfter": {},
+                      "type": "Compose",
+                      "inputs": "@if(equals(item()?['accessrightsmask'],1),'ReadAccess',if(equals(item()?['accessrightsmask'],3),'ReadAccess,WriteAccess',if(equals(item()?['accessrightsmask'],7),'ReadAccess,WriteAccess,AppendAccess','ReadAccess,AppendToAccess')))"
+                    },
+                    "If_parent_share_is_user": {
+                      "actions": {
+                        "Build_user_parent_share_payload": {
+                          "runAfter": {},
+                          "type": "Compose",
+                          "inputs": {
+                            "Target": {
+                              "@@odata.type": "Microsoft.Dynamics.CRM.pl_partner",
+                              "pl_partnerid": "@triggerOutputs()?['body/_pl_partnerlookup_value']"
+                            },
+                            "PrincipalAccess": {
+                              "Principal": {
+                                "@@odata.type": "Microsoft.Dynamics.CRM.systemuser",
+                                "systemuserid": "@items('Reapply_parent_direct_shares')?['principalid']"
+                              },
+                              "AccessMask": "@outputs('Build_access_mask')"
+                            }
+                          }
+                        },
+                        "Grant_parent_access_to_user": {
+                          "runAfter": {
+                            "Build_user_parent_share_payload": [
+                              "Succeeded"
+                            ]
+                          },
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "host": {
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                              "connectionName": "shared_commondataserviceforapps",
+                              "operationId": "PerformUnboundAction"
+                            },
+                            "parameters": {
+                              "actionName": "GrantAccess",
+                              "item": "@outputs('Build_user_parent_share_payload')"
+                            },
+                            "authentication": "@parameters('$authentication')"
+                          }
+                        }
+                      },
+                      "runAfter": {
+                        "Build_access_mask": [
+                          "Succeeded"
+                        ]
+                      },
+                      "else": {
+                        "actions": {
+                          "Build_team_parent_share_payload": {
+                            "runAfter": {},
+                            "type": "Compose",
+                            "inputs": {
+                              "Target": {
+                                "@@odata.type": "Microsoft.Dynamics.CRM.pl_partner",
+                                "pl_partnerid": "@triggerOutputs()?['body/_pl_partnerlookup_value']"
+                              },
+                              "PrincipalAccess": {
+                                "Principal": {
+                                  "@@odata.type": "Microsoft.Dynamics.CRM.team",
+                                  "teamid": "@items('Reapply_parent_direct_shares')?['principalid']"
+                                },
+                                "AccessMask": "@outputs('Build_access_mask')"
+                              }
+                            }
+                          },
+                          "Grant_parent_access_to_team": {
+                            "runAfter": {
+                              "Build_team_parent_share_payload": [
+                                "Succeeded"
+                              ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "host": {
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                "connectionName": "shared_commondataserviceforapps",
+                                "operationId": "PerformUnboundAction"
+                              },
+                              "parameters": {
+                                "actionName": "GrantAccess",
+                                "item": "@outputs('Build_team_parent_share_payload')"
+                              },
+                              "authentication": "@parameters('$authentication')"
+                            }
+                          }
+                        }
+                      },
+                      "expression": {
+                        "equals": [
+                          "@items('Reapply_parent_direct_shares')?['principaltypecode']",
+                          "systemuser"
+                        ]
+                      },
+                      "type": "If"
+                    }
+                  },
+                  "runAfter": {},
+                  "else": {
+                    "actions": {
+                      "Skip_unmapped_parent_share": {
+                        "runAfter": {},
+                        "type": "Compose",
+                        "inputs": "親の直接共有に未対応の主体種別または権限マスクがあるため、再共有をスキップしました。"
+                      }
+                    }
+                  },
+                  "expression": {
+                    "and": [
+                      {
+                        "or": [
+                          {
+                            "equals": [
+                              "@items('Reapply_parent_direct_shares')?['principaltypecode']",
+                              "systemuser"
+                            ]
+                          },
+                          {
+                            "equals": [
+                              "@items('Reapply_parent_direct_shares')?['principaltypecode']",
+                              "team"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "or": [
+                          {
+                            "equals": [
+                              "@items('Reapply_parent_direct_shares')?['accessrightsmask']",
+                              1
+                            ]
+                          },
+                          {
+                            "equals": [
+                              "@items('Reapply_parent_direct_shares')?['accessrightsmask']",
+                              3
+                            ]
+                          },
+                          {
+                            "equals": [
+                              "@items('Reapply_parent_direct_shares')?['accessrightsmask']",
+                              7
+                            ]
+                          },
+                          {
+                            "equals": [
+                              "@items('Reapply_parent_direct_shares')?['accessrightsmask']",
+                              17
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {
+                "List_parent_direct_shares": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              }
+            }
+          },
+          "runAfter": {},
+          "else": {
+            "actions": {}
+          },
+          "expression": {
+            "not": {
+              "equals": [
+                "@coalesce(triggerOutputs()?['body/_pl_partnerlookup_value'],'')",
+                ""
+              ]
+            }
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

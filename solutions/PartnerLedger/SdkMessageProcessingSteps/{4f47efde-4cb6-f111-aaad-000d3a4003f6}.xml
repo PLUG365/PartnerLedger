@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="pl_cardcapture Assign PreOperation: BusinessCardCaptureOwner" SdkMessageProcessingStepId="{4f47efde-4cb6-f111-aaad-000d3a4003f6}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>8cbdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+  <PluginTypeName>PartnerLedger.Plugins.BusinessCardCaptureOwnerPlugin, PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66</PluginTypeName>
+  <PluginTypeId>4a47efde-4cb6-f111-aaad-000d3a4003f6</PluginTypeId>
+  <PrimaryEntity>pl_cardcapture</PrimaryEntity>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <Description>Move InputVersion, OCR Job, and Review owners in the same Capture ownership transaction.</Description>
+  <FilteringAttributes></FilteringAttributes>
+  <InvocationSource>0</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>20</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>0.1.0.1</IntroducedVersion>
+  <SdkMessageProcessingStepImages />
+</SdkMessageProcessingStep>

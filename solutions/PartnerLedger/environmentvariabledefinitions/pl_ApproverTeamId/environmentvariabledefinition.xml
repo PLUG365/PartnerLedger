@@ -1,0 +1,15 @@
+<environmentvariabledefinition schemaname="pl_ApproverTeamId">
+  <description default="承認者のDataverseグループチームのID（DataverseのチームID、またはEntraグループのオブジェクトID）">
+    <label description="ID of the approvers' Dataverse group team (the Dataverse team ID or the Entra group object ID)." languagecode="1033" />
+    <label description="承認者のDataverseグループチームのID（DataverseのチームID、またはEntraグループのオブジェクトID）" languagecode="1041" />
+  </description>
+  <displayname default="PartnerLedger 承認者Team ID">
+    <label description="PartnerLedger approver team ID" languagecode="1033" />
+    <label description="PartnerLedger 承認者Team ID" languagecode="1041" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>1</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

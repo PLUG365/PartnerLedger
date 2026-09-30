@@ -1,0 +1,25 @@
+{
+  "name": "partnerledger",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/pc"
+  ],
+  "engines": {
+    "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace apps/pc",
+    "build": "npm run build --workspace apps/pc",
+    "typecheck": "npm exec --workspace apps/pc -- tsc -b",
+    "lint": "npm run lint --workspace apps/pc",
+    "test": "vitest run --root apps/pc",
+    "scan": "node scripts/scan-public-tree.mjs",
+    "check": "npm run scan && npm run typecheck && npm run lint && npm test && npm run build"
+  },
+  "devDependencies": {
+    "vite": "^7.2.4",
+    "vitest": "^5.0.0"
+  }
+}

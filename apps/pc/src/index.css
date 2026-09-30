@@ -1,0 +1,32 @@
+@import './styles/design-tokens.css';
+
+:root {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 360px; }
+button, input, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; color: inherit; }
+button:disabled { cursor: not-allowed; opacity: .45; }
+button, input, select { border-radius: var(--radius-sm); }
+button { border: 1px solid transparent; background: transparent; }
+button:hover:not(:disabled) { filter: brightness(.96); }
+:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+input, select { border: 1px solid var(--color-border-strong); background: var(--color-surface); color: var(--color-text); padding: 10px 12px; min-width: 0; }
+input[type='checkbox'], input[type='radio'] { accent-color: var(--color-primary); width: 17px; height: 17px; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { line-height: 1.4; }
+h1 { font-size: 30px; font-weight: 700; letter-spacing: -.7px; }
+h2 { font-size: 18px; font-weight: 650; }
+h3 { font-size: 15px; font-weight: 650; }
+small { font-size: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }

@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml version="9.2.26091.152" SolutionPackageVersion="9.2" languagecode="1041" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26091.152" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26091.00152">
+  <SolutionManifest>
+    <UniqueName>PartnerLedger</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="PartnerLedger" languagecode="1041" />
+    </LocalizedNames>
+    <Descriptions />
+    <Version>0.1.0.5</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>pl_partnerledger</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="PartnerLedger Publisher" languagecode="1041" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="PartnerLedger専用Dataverseソリューションのpublisher" languagecode="1041" />
+      </Descriptions>
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>pl</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>10270</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="pl_approvallink" behavior="0" />
+      <RootComponent type="1" schemaName="pl_bulletinpost" behavior="0" />
+      <RootComponent type="1" schemaName="pl_businesscardreview" behavior="0" />
+      <RootComponent type="1" schemaName="pl_capturebatch" behavior="0" />
+      <RootComponent type="1" schemaName="pl_cardcapture" behavior="0" />
+      <RootComponent type="1" schemaName="pl_cardinputversion" behavior="0" />
+      <RootComponent type="1" schemaName="pl_contact" behavior="0" />
+      <RootComponent type="1" schemaName="pl_contract" behavior="0" />
+      <RootComponent type="1" schemaName="pl_contracttype" behavior="0" />
+      <RootComponent type="1" schemaName="pl_notification" behavior="0" />
+      <RootComponent type="1" schemaName="pl_ocrjob" behavior="0" />
+      <RootComponent type="1" schemaName="pl_operationlog" behavior="0" />
+      <RootComponent type="1" schemaName="pl_partner" behavior="0" />
+      <RootComponent type="1" schemaName="pl_partnersharesetting" behavior="0" />
+      <RootComponent type="1" schemaName="pl_request" behavior="0" />
+      <RootComponent type="1" schemaName="pl_settings" behavior="0" />
+      <RootComponent type="1" schemaName="pl_submissionversion" behavior="0" />
+      <RootComponent type="1" schemaName="systemuser" behavior="1" />
+      <RootComponent type="1" schemaName="team" behavior="1" />
+      <RootComponent type="20" id="{0c3bf5b5-0aae-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="20" id="{4bc715a8-0aae-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="20" id="{cbc915a8-0aae-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="20" id="{ef3293af-0aae-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="29" id="{01015b03-54b1-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="29" id="{2e14490f-edb2-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="29" id="{3b74e2c0-9cb5-f111-aaad-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="29" id="{5304d55f-a1b0-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="29" id="{ed0b072c-cdb5-f111-aaad-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="300" schemaName="pl_partnerledger_b51b4" behavior="0" />
+      <RootComponent type="91" id="{088d1313-74ae-f111-aaab-e4fade057b20}" schemaName="PartnerLedger.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5722dc61ee82ff66" behavior="0" />
+      <RootComponent type="92" id="{15060ef4-a5b2-f111-aaab-e4fade04470e}" behavior="0" />
+      <RootComponent type="92" id="{16bf2ec6-85ae-f111-aaab-e4fade057b20}" behavior="0" />
+      <RootComponent type="92" id="{18060ef4-a5b2-f111-aaab-e4fade04470e}" behavior="0" />
+      <RootComponent type="92" id="{1b060ef4-a5b2-f111-aaab-e4fade04470e}" behavior="0" />
+      <RootComponent type="92" id="{21c4bac4-26b1-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{2261df71-84af-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{44435ca5-40b6-f111-aaad-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{47435ca5-40b6-f111-aaad-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{4c47efde-4cb6-f111-aaad-000d3a4003f6}" behavior="0" />
+      <RootComponent type="92" id="{4f47efde-4cb6-f111-aaad-000d3a4003f6}" behavior="0" />
+      <RootComponent type="92" id="{54a22338-8bb0-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{54f72039-33b1-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{57a22338-8bb0-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{5caf3530-1bb3-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{5df0f894-15b0-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{5ff0f894-15b0-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{64ca515d-79b3-f111-aaad-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{7079e607-1ab1-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{7379e607-1ab1-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{7779e607-1ab1-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{7a79e607-1ab1-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{9960c19a-4db2-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{a3fd50d3-20b0-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{bb124da9-2e8d-4d82-80b2-c40d8a9ad360}" behavior="0" />
+      <RootComponent type="92" id="{bed8d8a4-1db5-f111-aaad-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{d0f6a812-39b1-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{d1bdd196-beb2-f111-aaac-e4fb1eff79c7}" behavior="0" />
+      <RootComponent type="92" id="{d4bdd196-beb2-f111-aaac-e4fb1eff79c7}" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="1" schemaName="systemuser" displayName="SystemUser" parentSchemaName="" solution="msdyn_PowerAdminSettingsEmail (2.2.3517.1)" />
+        <Dependent type="1" schemaName="systemuser" displayName="SystemUser" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="team" displayName="Team" parentSchemaName="" solution="msdynce_AppCommonPatch (9.0.1904.4006)" />
+        <Dependent type="1" schemaName="team" displayName="Team" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="401" displayName="BusinessCard model" solution="msdyn_AISolutionDefaultTemplates (202608.4.19.2)" id="{a0440df3-2656-e911-8194-000d3a6cd5a5}">
+          <package appName="PowerAI" version="202608.4.19.2">msdyn_AISolutionAnchor (202608.4.19.2)</package>
+        </Required>
+        <Dependent type="29" displayName="PartnerLedger OCR Business Card - R12-C" id="{2e14490f-edb2-f111-aaac-e4fb1eff79c7}" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

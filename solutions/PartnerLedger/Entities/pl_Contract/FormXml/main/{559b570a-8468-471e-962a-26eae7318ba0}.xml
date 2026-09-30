@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{559b570a-8468-471e-962a-26eae7318ba0}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{ca520c4f-ee52-4a79-a479-4c5577438314}" IsUserDefined="1">
+          <labels>
+            <label description="全般" languagecode="1041" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{16e7bef1-eed5-4d55-89fa-f9337ac25fc3}">
+                  <labels>
+                    <label description="全般" languagecode="1041" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{e3191be4-a95e-4b60-8782-ab34ed18ed2c}">
+                        <labels>
+                          <label description="Name" languagecode="1041" />
+                          <label description="Name" languagecode="1033" />
+                        </labels>
+                        <control id="pl_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pl_name" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d5423471-c375-4bb4-b820-2792be75c971}">
+                        <labels>
+                          <label description="所有者" languagecode="1041" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a4d863f8-839a-4e10-ae88-3db76a1cca9f}">
+                        <labels>
+                          <label description="ContractStatusCode" languagecode="1041" />
+                          <label description="ContractStatusCode" languagecode="1033" />
+                        </labels>
+                        <control id="pl_contractstatuscode" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="pl_contractstatuscode" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{66c9e985-3dbe-45b5-a1c0-111941cc2fa6}">
+                        <labels>
+                          <label description="EndDate" languagecode="1041" />
+                          <label description="EndDate" languagecode="1033" />
+                        </labels>
+                        <control id="pl_enddate" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="pl_enddate" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c218e039-f414-4bcc-ba38-09f44669041a}">
+                        <labels>
+                          <label description="NoticeDate" languagecode="1041" />
+                          <label description="NoticeDate" languagecode="1033" />
+                        </labels>
+                        <control id="pl_noticedate" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="pl_noticedate" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{92b724aa-b2a8-4baf-a34d-9b9e6007eaf7}">
+                        <labels>
+                          <label description="DecisionDate" languagecode="1041" />
+                          <label description="DecisionDate" languagecode="1033" />
+                        </labels>
+                        <control id="pl_decisiondate" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="pl_decisiondate" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fb80a3f0-1963-4ed3-b753-a858124eca88}">
+                        <labels>
+                          <label description="AutoRenew" languagecode="1033" />
+                          <label description="AutoRenew" languagecode="1041" />
+                        </labels>
+                        <control id="pl_autorenew" classid="{67fac785-cd58-4f9f-abb3-4b7ddc6ed5ed}" datafieldname="pl_autorenew" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8167f710-ac7e-40ac-9263-b9d64ee0ae67}">
+                        <labels>
+                          <label description="Link" languagecode="1041" />
+                          <label description="Link" languagecode="1033" />
+                        </labels>
+                        <control id="pl_link" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="pl_link" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="情報" languagecode="1041" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="このエンティティ用のフォームです。" languagecode="1041" />
+    </Descriptions>
+  </systemform>
+</forms>

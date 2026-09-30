@@ -1,0 +1,761 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pl_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "timeZone": "Tokyo Standard Time",
+            "startTime": "2026-09-22T07:00:00",
+            "schedule": {
+              "hours": [
+                7
+              ],
+              "minutes": [
+                0
+              ]
+            }
+          },
+          "evaluatedRecurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "timeZone": "Tokyo Standard Time"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "NotificationQueueWorkDisabled": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "4e6690d4-73b7-4732-a6fb-cd6cc92194c7"
+          },
+          "type": "Compose",
+          "inputs": "PL-010 queue preparation. Mail/Teams delivery and flow activation remain disabled."
+        },
+        "List_Contract_DeadlineCandidates": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "12de2ea2-0336-47fe-aa1d-d59c140746ca"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords"
+            },
+            "parameters": {
+              "entityName": "pl_contracts",
+              "$select": "pl_contractid,pl_name,pl_enddate,pl_noticedate,pl_decisiondate,_pl_partnerlookup_value,_ownerid_value",
+              "$filter": "statecode eq 0 and (pl_enddate ne null or pl_noticedate ne null or pl_decisiondate ne null)",
+              "$top": 5000,
+              "$orderby": "pl_enddate asc"
+            }
+          }
+        },
+        "List_Card_BacklogCandidates": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "453eb2d0-2bf4-4000-b9ee-02945140521c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords"
+            },
+            "parameters": {
+              "entityName": "pl_cardcaptures",
+              "$select": "pl_cardcaptureid,pl_name,pl_capturestatuscode,createdon,_ownerid_value",
+              "$filter": "statecode eq 0 and (pl_capturestatuscode eq '確認待ち' or pl_capturestatuscode eq '失敗' or pl_capturestatuscode eq '結果不明') and createdon lt '@{addDays(utcNow(), -2)}'",
+              "$top": 5000,
+              "$orderby": "createdon asc"
+            }
+          }
+        },
+        "Compose_NotificationPolicy": {
+          "runAfter": {
+            "List_Contract_DeadlineCandidates": [
+              "Succeeded"
+            ],
+            "List_Card_BacklogCandidates": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9dae8fa4-8ffc-4107-84fb-4fc99d9eabe5"
+          },
+          "type": "Compose",
+          "inputs": {
+            "timezone": "Tokyo Standard Time",
+            "schedule": "08:00",
+            "contractEndNoticeDays": 30,
+            "contractNoticeDateDays": 7,
+            "contractDecisionDateDays": 1,
+            "cardBacklogDays": 3,
+            "recipientPriority": [
+              "owner"
+            ],
+            "unresolvedRecipientBehavior": "create-failure-no-send"
+          }
+        },
+        "ForEach_ContractCandidate": {
+          "foreach": "@body('List_Contract_DeadlineCandidates')?['value']",
+          "actions": {
+            "Contract_OwnerUser": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "ff18abbe-3475-49d3-9aaa-8bf5af7e0547"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords"
+                },
+                "parameters": {
+                  "entityName": "systemusers",
+                  "$select": "systemuserid,internalemailaddress,fullname",
+                  "$filter": "systemuserid eq @{items('ForEach_ContractCandidate')?['_ownerid_value']} and isdisabled eq false",
+                  "$top": 1
+                }
+              }
+            },
+            "Contract_OwnerTeam": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "343ac57b-9587-4d19-a772-eacb9ca40546"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords"
+                },
+                "parameters": {
+                  "entityName": "teams",
+                  "$select": "teamid,emailaddress,name",
+                  "$filter": "teamid eq @{items('ForEach_ContractCandidate')?['_ownerid_value']}",
+                  "$top": 1
+                }
+              }
+            },
+            "Contract_Recipient": {
+              "runAfter": {
+                "Contract_OwnerUser": [
+                  "Succeeded"
+                ],
+                "Contract_OwnerTeam": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0bbc8cff-f435-4201-97cd-4684bace6bb4"
+              },
+              "type": "Compose",
+              "inputs": {
+                "type": "@if(greater(length(body('Contract_OwnerUser')?['value']),0),'user',if(greater(length(body('Contract_OwnerTeam')?['value']),0),'team','unresolved'))",
+                "address": "@toLower(coalesce(first(body('Contract_OwnerUser')?['value'])?['internalemailaddress'],first(body('Contract_OwnerTeam')?['value'])?['emailaddress'],''))"
+              }
+            },
+            "Contract_End": {
+              "actions": {
+                "ContractEnd_Existing": {
+                  "runAfter": {
+                    "ContractEnd_Key": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "10ddb041-3bde-48c5-9d70-d33de1e04dca"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords"
+                    },
+                    "parameters": {
+                      "entityName": "pl_notifications",
+                      "$select": "pl_notificationid,pl_idempotencykey,pl_notificationstatuscode",
+                      "$filter": "@concat('pl_idempotencykey eq ''',outputs('ContractEnd_Key'),'''')",
+                      "$top": 1
+                    }
+                  }
+                },
+                "ContractEnd_CreateIfMissing": {
+                  "actions": {
+                    "ContractEnd_Create": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "09279d39-5f0c-4cf7-8392-a505e71e9802"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "CreateRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_notifications",
+                          "item/pl_correlationkey": "@workflow().run.name",
+                          "item/pl_errorcode": "@if(equals(outputs('Contract_Recipient')?['address'],''),'no-recipient',null)",
+                          "item/pl_targetrecordkey": "@items('ForEach_ContractCandidate')?['pl_contractid']",
+                          "item/pl_targetdueat": "@items('ForEach_ContractCandidate')?['pl_enddate']",
+                          "item/pl_recipienttypecode": "@outputs('Contract_Recipient')?['type']",
+                          "item/pl_attemptnumber": 0,
+                          "item/pl_channelcode": "email",
+                          "item/pl_recipientaddress": "@outputs('Contract_Recipient')?['address']",
+                          "item/pl_targettypecode": "pl_contract",
+                          "item/pl_idempotencykey": "@outputs('ContractEnd_Key')",
+                          "item/pl_scheduledat": "@utcNow()",
+                          "item/pl_name": "@concat('PL-010|',outputs('ContractEnd_Key'))",
+                          "item/pl_notificationstatuscode": "@if(equals(outputs('Contract_Recipient')?['address'],''),'失敗','待機')"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "ContractEnd_Existing": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "expression": {
+                    "equals": [
+                      "@length(body('ContractEnd_Existing')?['value'])",
+                      0
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "22f5eced-bb79-431a-835c-07d79e03cb07"
+                  },
+                  "type": "If"
+                },
+                "ContractEnd_Key": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "dec1f8a8-9939-4c61-946a-821ad71be5c2"
+                  },
+                  "type": "Compose",
+                  "inputs": "@concat('pl_contract|',items('ForEach_ContractCandidate')?['pl_contractid'],'|contract-end|',formatDateTime(convertFromUtc(utcNow(),'Tokyo Standard Time'),'yyyy-MM-dd'),'|',if(greater(length(outputs('Contract_Recipient')?['address']),20),substring(outputs('Contract_Recipient')?['address'],0,20),outputs('Contract_Recipient')?['address']))"
+                }
+              },
+              "runAfter": {
+                "Contract_Recipient": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {}
+              },
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@items('ForEach_ContractCandidate')?['pl_enddate']",
+                        ""
+                      ]
+                    }
+                  },
+                  {
+                    "equals": [
+                      "@formatDateTime(items('ForEach_ContractCandidate')?['pl_enddate'],'yyyy-MM-dd')",
+                      "@formatDateTime(addDays(convertFromUtc(utcNow(),'Tokyo Standard Time'),30),'yyyy-MM-dd')"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cc441130-9b21-472c-9a1d-4011e20089d8"
+              },
+              "type": "If"
+            },
+            "Contract_Notice": {
+              "actions": {
+                "ContractNotice_CreateIfMissing": {
+                  "actions": {
+                    "ContractNotice_Create": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "78bcd35b-4719-484f-8c3f-48cd7c7480e4"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "CreateRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_notifications",
+                          "item/pl_correlationkey": "@workflow().run.name",
+                          "item/pl_errorcode": "@if(equals(outputs('Contract_Recipient')?['address'],''),'no-recipient',null)",
+                          "item/pl_targetrecordkey": "@items('ForEach_ContractCandidate')?['pl_contractid']",
+                          "item/pl_targetdueat": "@items('ForEach_ContractCandidate')?['pl_noticedate']",
+                          "item/pl_recipienttypecode": "@outputs('Contract_Recipient')?['type']",
+                          "item/pl_attemptnumber": 0,
+                          "item/pl_channelcode": "email",
+                          "item/pl_recipientaddress": "@outputs('Contract_Recipient')?['address']",
+                          "item/pl_targettypecode": "pl_contract",
+                          "item/pl_idempotencykey": "@outputs('ContractNotice_Key')",
+                          "item/pl_scheduledat": "@utcNow()",
+                          "item/pl_name": "@concat('PL-010|',outputs('ContractNotice_Key'))",
+                          "item/pl_notificationstatuscode": "@if(equals(outputs('Contract_Recipient')?['address'],''),'失敗','待機')"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "ContractNotice_Existing": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "expression": {
+                    "equals": [
+                      "@length(body('ContractNotice_Existing')?['value'])",
+                      0
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "393be214-8a66-4d58-9acd-e8245cb856cc"
+                  },
+                  "type": "If"
+                },
+                "ContractNotice_Key": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "16f3f10f-7156-42d3-b718-cb12820be8dd"
+                  },
+                  "type": "Compose",
+                  "inputs": "@concat('pl_contract|',items('ForEach_ContractCandidate')?['pl_contractid'],'|contract-notice|',formatDateTime(convertFromUtc(utcNow(),'Tokyo Standard Time'),'yyyy-MM-dd'),'|',if(greater(length(outputs('Contract_Recipient')?['address']),20),substring(outputs('Contract_Recipient')?['address'],0,20),outputs('Contract_Recipient')?['address']))"
+                },
+                "ContractNotice_Existing": {
+                  "runAfter": {
+                    "ContractNotice_Key": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "0b112a93-7892-4ff6-9ef1-dc71a81ac900"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords"
+                    },
+                    "parameters": {
+                      "entityName": "pl_notifications",
+                      "$select": "pl_notificationid,pl_idempotencykey,pl_notificationstatuscode",
+                      "$filter": "@concat('pl_idempotencykey eq ''',outputs('ContractNotice_Key'),'''')",
+                      "$top": 1
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Contract_Recipient": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {}
+              },
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@items('ForEach_ContractCandidate')?['pl_noticedate']",
+                        ""
+                      ]
+                    }
+                  },
+                  {
+                    "equals": [
+                      "@formatDateTime(items('ForEach_ContractCandidate')?['pl_noticedate'],'yyyy-MM-dd')",
+                      "@formatDateTime(addDays(convertFromUtc(utcNow(),'Tokyo Standard Time'),7),'yyyy-MM-dd')"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "68423727-54ff-490e-982a-4af3d82f3cfb"
+              },
+              "type": "If"
+            },
+            "Contract_Decision": {
+              "actions": {
+                "ContractDecision_Existing": {
+                  "runAfter": {
+                    "ContractDecision_Key": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "477518fa-83d8-4f6f-b07e-604d4c017284"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords"
+                    },
+                    "parameters": {
+                      "entityName": "pl_notifications",
+                      "$select": "pl_notificationid,pl_idempotencykey,pl_notificationstatuscode",
+                      "$filter": "@concat('pl_idempotencykey eq ''',outputs('ContractDecision_Key'),'''')",
+                      "$top": 1
+                    }
+                  }
+                },
+                "ContractDecision_CreateIfMissing": {
+                  "actions": {
+                    "ContractDecision_Create": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "43bb60ec-b2ae-465f-8ce7-3dedf052bc7c"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "CreateRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_notifications",
+                          "item/pl_correlationkey": "@workflow().run.name",
+                          "item/pl_errorcode": "@if(equals(outputs('Contract_Recipient')?['address'],''),'no-recipient',null)",
+                          "item/pl_targetrecordkey": "@items('ForEach_ContractCandidate')?['pl_contractid']",
+                          "item/pl_targetdueat": "@items('ForEach_ContractCandidate')?['pl_decisiondate']",
+                          "item/pl_recipienttypecode": "@outputs('Contract_Recipient')?['type']",
+                          "item/pl_attemptnumber": 0,
+                          "item/pl_channelcode": "email",
+                          "item/pl_recipientaddress": "@outputs('Contract_Recipient')?['address']",
+                          "item/pl_targettypecode": "pl_contract",
+                          "item/pl_idempotencykey": "@outputs('ContractDecision_Key')",
+                          "item/pl_scheduledat": "@utcNow()",
+                          "item/pl_name": "@concat('PL-010|',outputs('ContractDecision_Key'))",
+                          "item/pl_notificationstatuscode": "@if(equals(outputs('Contract_Recipient')?['address'],''),'失敗','待機')"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "ContractDecision_Existing": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "expression": {
+                    "equals": [
+                      "@length(body('ContractDecision_Existing')?['value'])",
+                      0
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "6adc0471-5af9-4b30-9a35-c1102804c070"
+                  },
+                  "type": "If"
+                },
+                "ContractDecision_Key": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "f505f901-074a-4e43-abcb-4d5be481521b"
+                  },
+                  "type": "Compose",
+                  "inputs": "@concat('pl_contract|',items('ForEach_ContractCandidate')?['pl_contractid'],'|contract-decision|',formatDateTime(convertFromUtc(utcNow(),'Tokyo Standard Time'),'yyyy-MM-dd'),'|',if(greater(length(outputs('Contract_Recipient')?['address']),20),substring(outputs('Contract_Recipient')?['address'],0,20),outputs('Contract_Recipient')?['address']))"
+                }
+              },
+              "runAfter": {
+                "Contract_Recipient": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {}
+              },
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@items('ForEach_ContractCandidate')?['pl_decisiondate']",
+                        ""
+                      ]
+                    }
+                  },
+                  {
+                    "equals": [
+                      "@formatDateTime(items('ForEach_ContractCandidate')?['pl_decisiondate'],'yyyy-MM-dd')",
+                      "@formatDateTime(addDays(convertFromUtc(utcNow(),'Tokyo Standard Time'),1),'yyyy-MM-dd')"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6f2214ce-de93-4c40-82fa-95716fd350b0"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Compose_NotificationPolicy": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "88588dcf-6c55-4790-8111-a6d425b72b2f"
+          },
+          "type": "Foreach",
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          }
+        },
+        "ForEach_CardCandidate": {
+          "foreach": "@body('List_Card_BacklogCandidates')?['value']",
+          "actions": {
+            "Card_OwnerUser": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "ab1c4dde-aa08-4ac2-8077-12cf7a7e4b5f"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords"
+                },
+                "parameters": {
+                  "entityName": "systemusers",
+                  "$select": "systemuserid,internalemailaddress,fullname",
+                  "$filter": "systemuserid eq @{items('ForEach_CardCandidate')?['_ownerid_value']} and isdisabled eq false",
+                  "$top": 1
+                }
+              }
+            },
+            "Card_OwnerTeam": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "ca3e141a-bf62-48f8-8746-133616b643b9"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords"
+                },
+                "parameters": {
+                  "entityName": "teams",
+                  "$select": "teamid,emailaddress,name",
+                  "$filter": "teamid eq @{items('ForEach_CardCandidate')?['_ownerid_value']}",
+                  "$top": 1
+                }
+              }
+            },
+            "Card_Recipient": {
+              "runAfter": {
+                "Card_OwnerUser": [
+                  "Succeeded"
+                ],
+                "Card_OwnerTeam": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "d1cff3a9-668a-468e-b645-bc61d603214c"
+              },
+              "type": "Compose",
+              "inputs": {
+                "type": "@if(greater(length(body('Card_OwnerUser')?['value']),0),'user',if(greater(length(body('Card_OwnerTeam')?['value']),0),'team','unresolved'))",
+                "address": "@toLower(coalesce(first(body('Card_OwnerUser')?['value'])?['internalemailaddress'],first(body('Card_OwnerTeam')?['value'])?['emailaddress'],''))"
+              }
+            },
+            "Card_Backlog": {
+              "actions": {
+                "CardBacklog_Existing": {
+                  "runAfter": {
+                    "CardBacklog_Key": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "04f7ffd5-3b7e-468b-843f-403abac6757a"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords"
+                    },
+                    "parameters": {
+                      "entityName": "pl_notifications",
+                      "$select": "pl_notificationid,pl_idempotencykey,pl_notificationstatuscode",
+                      "$filter": "@concat('pl_idempotencykey eq ''',outputs('CardBacklog_Key'),'''')",
+                      "$top": 1
+                    }
+                  }
+                },
+                "CardBacklog_Key": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "33043003-7cda-4bd7-88ad-c3dde1f51931"
+                  },
+                  "type": "Compose",
+                  "inputs": "@concat('pl_cardcapture|',items('ForEach_CardCandidate')?['pl_cardcaptureid'],'|card-backlog|',formatDateTime(convertFromUtc(utcNow(),'Tokyo Standard Time'),'yyyy-MM-dd'),'|',if(greater(length(outputs('Card_Recipient')?['address']),20),substring(outputs('Card_Recipient')?['address'],0,20),outputs('Card_Recipient')?['address']))"
+                },
+                "CardBacklog_CreateIfMissing": {
+                  "actions": {
+                    "CardBacklog_Create": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "3c73e17a-0f5e-4f73-82de-75fd3641fa56"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "CreateRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_notifications",
+                          "item/pl_correlationkey": "@workflow().run.name",
+                          "item/pl_errorcode": "@if(equals(outputs('Card_Recipient')?['address'],''),'no-recipient',null)",
+                          "item/pl_targetrecordkey": "@items('ForEach_CardCandidate')?['pl_cardcaptureid']",
+                          "item/pl_targetdueat": "@items('ForEach_CardCandidate')?['createdon']",
+                          "item/pl_recipienttypecode": "@outputs('Card_Recipient')?['type']",
+                          "item/pl_attemptnumber": 0,
+                          "item/pl_channelcode": "email",
+                          "item/pl_recipientaddress": "@outputs('Card_Recipient')?['address']",
+                          "item/pl_targettypecode": "pl_cardcapture",
+                          "item/pl_idempotencykey": "@outputs('CardBacklog_Key')",
+                          "item/pl_scheduledat": "@utcNow()",
+                          "item/pl_name": "@concat('PL-010|',outputs('CardBacklog_Key'))",
+                          "item/pl_notificationstatuscode": "@if(equals(outputs('Card_Recipient')?['address'],''),'失敗','待機')"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "CardBacklog_Existing": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "expression": {
+                    "equals": [
+                      "@length(body('CardBacklog_Existing')?['value'])",
+                      0
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "563d8478-7a2b-43fe-8334-2a5dd13ef973"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {
+                "Card_Recipient": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {}
+              },
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@items('ForEach_CardCandidate')?['createdon']",
+                        ""
+                      ]
+                    }
+                  },
+                  {
+                    "equals": [
+                      "@formatDateTime(convertFromUtc(items('ForEach_CardCandidate')?['createdon'],'Tokyo Standard Time'),'yyyy-MM-dd')",
+                      "@formatDateTime(addDays(convertFromUtc(utcNow(),'Tokyo Standard Time'),-3),'yyyy-MM-dd')"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bf073082-df5e-4f9d-bc2b-f5d81d5f6530"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Compose_NotificationPolicy": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d0f47d64-6822-4192-8d38-eada2d2d5cf3"
+          },
+          "type": "Foreach",
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          }
+        }
+      },
+      "outputs": {},
+      "description": "PL-010 stopped queue preparation with idempotent notification rows; delivery is disabled."
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,951 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pl_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_approvals": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pl_approvals"
+        },
+        "api": {
+          "name": "shared_approvals"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pl_office365outlook"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      },
+      "shared_office365groups": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pl_office365groups"
+        },
+        "api": {
+          "name": "shared_office365groups"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "pl_ApprovalGroupAddress": {
+          "defaultValue": null,
+          "type": "String",
+          "metadata": {
+            "schemaName": "pl_ApprovalGroupAddress"
+          }
+        }
+      },
+      "triggers": {
+        "When_approval_link_created": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "pl_approvallink",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/runas": 3,
+              "subscriptionRequest/name": "01015b03-54b1-f111-aaac-e4fb1eff79c7:MTA"
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_approval_link": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem"
+            },
+            "parameters": {
+              "entityName": "pl_approvallinks",
+              "recordId": "@triggerOutputs()?['body/pl_approvallinkid']",
+              "$select": "pl_approvallinkid,pl_name,pl_approvalsourcecode,pl_linkstatuscode,pl_resultknown,pl_decisioncode,pl_externalrequestkey,_pl_requestlookup_value,_pl_submissionversionlookup_value"
+            }
+          }
+        },
+        "Check_pending_approval_link": {
+          "actions": {
+            "Get_request": {
+              "runAfter": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem"
+                },
+                "parameters": {
+                  "entityName": "pl_requests",
+                  "recordId": "@body('Get_approval_link')?['_pl_requestlookup_value']",
+                  "$select": "pl_requestid,pl_name,pl_requeststatuscode,_pl_requestinguserlookup_value,_pl_approverteamlookup_value"
+                }
+              }
+            },
+            "Get_submission_version": {
+              "runAfter": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem"
+                },
+                "parameters": {
+                  "entityName": "pl_submissionversions",
+                  "recordId": "@body('Get_approval_link')?['_pl_submissionversionlookup_value']",
+                  "$select": "pl_submissionversionid,pl_name,pl_versionnumber,pl_changesummary,pl_approvaltitle"
+                }
+              }
+            },
+            "Start_group_approval": {
+              "runAfter": {
+                "Get_request": [
+                  "Succeeded"
+                ],
+                "Get_submission_version": [
+                  "Succeeded"
+                ],
+                "Check_approval_group_address": [
+                  "Succeeded"
+                ],
+                "Compose_app_link": [
+                  "Succeeded"
+                ],
+                "Check_assignee_fallback": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped",
+                  "TimedOut"
+                ]
+              },
+              "type": "OpenApiConnectionWebhook",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_approvals",
+                  "connectionName": "shared_approvals",
+                  "operationId": "StartAndWaitForAnApproval"
+                },
+                "parameters": {
+                  "approvalType": "Basic",
+                  "WebhookApprovalCreationInput/title": "PartnerLedger 承認: @{if(empty(body('Get_submission_version')?['pl_approvaltitle']), body('Get_request')?['pl_name'], body('Get_submission_version')?['pl_approvaltitle'])}",
+                  "WebhookApprovalCreationInput/assignedTo": "@variables('approval_assignees')",
+                  "WebhookApprovalCreationInput/details": "申請者：@{body('Get_request')?['_pl_requestinguserlookup_value@OData.Community.Display.V1.FormattedValue']}\n\n@{if(empty(body('Get_submission_version')?['pl_changesummary']), concat('提出版: ', body('Get_submission_version')?['pl_name']), replace(body('Get_submission_version')?['pl_changesummary'], decodeUriComponent('%0A'), concat(decodeUriComponent('%0A'), decodeUriComponent('%0A'))))}\n\n内容はPartnerLedgerの「承認申請」でも確認できます（下のリンクから開けます）。申請がPartnerLedgerで取り消された場合、この承認依頼に応答しても反映されません。",
+                  "WebhookApprovalCreationInput/enableNotifications": true,
+                  "WebhookApprovalCreationInput/itemLink": "@if(empty(outputs('Compose_app_link')), 'https://apps.powerapps.com/', outputs('Compose_app_link'))",
+                  "WebhookApprovalCreationInput/itemLinkDescription": "PartnerLedgerで申請を開く"
+                }
+              },
+              "limit": {
+                "timeout": "P21D"
+              }
+            },
+            "Check_approval_group_address": {
+              "runAfter": {
+                "Get_request": [
+                  "Succeeded"
+                ],
+                "Get_submission_version": [
+                  "Succeeded"
+                ]
+              },
+              "type": "If",
+              "expression": {
+                "not": {
+                  "equals": [
+                    "@trim(coalesce(parameters('pl_ApprovalGroupAddress'),''))",
+                    ""
+                  ]
+                }
+              },
+              "actions": {},
+              "else": {
+                "actions": {
+                  "Fail_missing_approval_group_address": {
+                    "runAfter": {},
+                    "type": "Terminate",
+                    "inputs": {
+                      "runStatus": "Failed",
+                      "runError": {
+                        "code": "PartnerLedger.ApprovalGroupAddressMissing",
+                        "message": "pl_ApprovalGroupAddress is not configured. Set the environment-specific approval group address, then safely retry this run. No approval was created and the ApprovalLink was not changed."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Get_request_after_response": {
+              "runAfter": {
+                "Start_group_approval": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem"
+                },
+                "parameters": {
+                  "entityName": "pl_requests",
+                  "recordId": "@body('Get_approval_link')?['_pl_requestlookup_value']",
+                  "$select": "pl_requestid,pl_requeststatuscode"
+                }
+              }
+            },
+            "If_request_cancelled": {
+              "runAfter": {
+                "Get_request_after_response": [
+                  "Succeeded"
+                ]
+              },
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@body('Get_request_after_response')?['pl_requeststatuscode']",
+                  "取消"
+                ]
+              },
+              "actions": {
+                "Skip_cancelled_request": {
+                  "runAfter": {},
+                  "type": "Compose",
+                  "inputs": "申請はPartnerLedgerで取り消し済みのため、承認結果を書き込まない。"
+                }
+              },
+              "else": {
+                "actions": {
+                  "If_approved": {
+                    "actions": {
+                      "Update_link_as_approved": {
+                        "runAfter": {},
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "connectionName": "shared_commondataserviceforapps",
+                            "operationId": "UpdateOnlyRecord"
+                          },
+                          "parameters": {
+                            "entityName": "pl_approvallinks",
+                            "recordId": "@body('Get_approval_link')?['pl_approvallinkid']",
+                            "item": {
+                              "pl_resultknown": true,
+                              "pl_decisioncode": "承認"
+                            }
+                          }
+                        }
+                      },
+                      "Wait_before_approval_retry": {
+                        "runAfter": {
+                          "Update_link_as_approved": [
+                            "Failed",
+                            "TimedOut"
+                          ]
+                        },
+                        "type": "Wait",
+                        "inputs": {
+                          "interval": {
+                            "count": 15,
+                            "unit": "Second"
+                          }
+                        }
+                      },
+                      "Retry_update_link_as_approved": {
+                        "runAfter": {
+                          "Wait_before_approval_retry": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "connectionName": "shared_commondataserviceforapps",
+                            "operationId": "UpdateOnlyRecord"
+                          },
+                          "parameters": {
+                            "entityName": "pl_approvallinks",
+                            "recordId": "@body('Get_approval_link')?['pl_approvallinkid']",
+                            "item": {
+                              "pl_resultknown": true,
+                              "pl_decisioncode": "承認"
+                            }
+                          }
+                        }
+                      },
+                      "Get_request_after_approval": {
+                        "runAfter": {
+                          "Retry_update_link_as_approved": [
+                            "Succeeded",
+                            "Skipped"
+                          ]
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "connectionName": "shared_commondataserviceforapps",
+                            "operationId": "GetItem"
+                          },
+                          "parameters": {
+                            "entityName": "pl_requests",
+                            "recordId": "@body('Get_approval_link')?['_pl_requestlookup_value']",
+                            "$select": "pl_requestid,pl_name,pl_requeststatuscode,pl_cancellationreason,_pl_requestinguserlookup_value"
+                          }
+                        }
+                      },
+                      "If_reflection_failed": {
+                        "runAfter": {
+                          "Get_request_after_approval": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "If",
+                        "expression": {
+                          "equals": [
+                            "@body('Get_request_after_approval')?['pl_requeststatuscode']",
+                            "反映失敗"
+                          ]
+                        },
+                        "actions": {
+                          "Get_requester": {
+                            "runAfter": {},
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "host": {
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                "connectionName": "shared_commondataserviceforapps",
+                                "operationId": "GetItem"
+                              },
+                              "parameters": {
+                                "entityName": "systemusers",
+                                "recordId": "@body('Get_request_after_approval')?['_pl_requestinguserlookup_value']",
+                                "$select": "systemuserid,fullname,internalemailaddress"
+                              }
+                            }
+                          },
+                          "Notify_requester_reflection_failed": {
+                            "runAfter": {
+                              "Get_requester": [
+                                "Succeeded"
+                              ]
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "host": {
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                                "connectionName": "shared_office365",
+                                "operationId": "SendEmailV2"
+                              },
+                              "parameters": {
+                                "emailMessage/To": "@body('Get_requester')?['internalemailaddress']",
+                                "emailMessage/Subject": "@concat('[PartnerLedger] 承認された申請を反映できませんでした：', body('Get_request_after_approval')?['pl_name'])",
+                                "emailMessage/Body": "@concat('<p>承認された申請の内容を、取引先・契約へ反映できませんでした。</p>', '<p>申請：', replace(replace(replace(coalesce(body('Get_request_after_approval')?['pl_name'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '<br>', '理由：', replace(replace(replace(coalesce(body('Get_request_after_approval')?['pl_cancellationreason'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '</p>', '<p>PartnerLedgerの「承認申請」で詳しい内容を確認できます。</p>', if(empty(outputs('Compose_app_link')), '', concat('<p><a href=\"', replace(outputs('Compose_app_link'), '&', '&amp;'), '\">PartnerLedgerで申請を開く</a></p>')))",
+                                "emailMessage/Importance": "Normal"
+                              }
+                            }
+                          }
+                        },
+                        "else": {
+                          "actions": {}
+                        }
+                      }
+                    },
+                    "runAfter": {},
+                    "else": {
+                      "actions": {
+                        "If_rejected": {
+                          "actions": {
+                            "Update_link_as_rejected": {
+                              "runAfter": {},
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "UpdateOnlyRecord"
+                                },
+                                "parameters": {
+                                  "entityName": "pl_approvallinks",
+                                  "recordId": "@body('Get_approval_link')?['pl_approvallinkid']",
+                                  "item": {
+                                    "pl_resultknown": true,
+                                    "pl_decisioncode": "却下"
+                                  }
+                                }
+                              }
+                            },
+                            "Wait_before_rejection_retry": {
+                              "runAfter": {
+                                "Update_link_as_rejected": [
+                                  "Failed",
+                                  "TimedOut"
+                                ]
+                              },
+                              "type": "Wait",
+                              "inputs": {
+                                "interval": {
+                                  "count": 15,
+                                  "unit": "Second"
+                                }
+                              }
+                            },
+                            "Retry_update_link_as_rejected": {
+                              "runAfter": {
+                                "Wait_before_rejection_retry": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "UpdateOnlyRecord"
+                                },
+                                "parameters": {
+                                  "entityName": "pl_approvallinks",
+                                  "recordId": "@body('Get_approval_link')?['pl_approvallinkid']",
+                                  "item": {
+                                    "pl_resultknown": true,
+                                    "pl_decisioncode": "却下"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "runAfter": {},
+                          "else": {
+                            "actions": {
+                              "Leave_link_unresolved": {
+                                "runAfter": {},
+                                "type": "Compose",
+                                "inputs": "承認結果がApprove/Reject以外のため、ApprovalLinkを更新しない。"
+                              }
+                            }
+                          },
+                          "expression": {
+                            "equals": [
+                              "@body('Start_group_approval')?['outcome']",
+                              "Reject"
+                            ]
+                          },
+                          "type": "If"
+                        }
+                      }
+                    },
+                    "expression": {
+                      "equals": [
+                        "@body('Start_group_approval')?['outcome']",
+                        "Approve"
+                      ]
+                    },
+                    "type": "If"
+                  }
+                }
+              }
+            },
+            "Get_request_after_timeout": {
+              "runAfter": {
+                "Start_group_approval": [
+                  "TimedOut"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem"
+                },
+                "parameters": {
+                  "entityName": "pl_requests",
+                  "recordId": "@body('Get_approval_link')?['_pl_requestlookup_value']",
+                  "$select": "pl_requestid,pl_requeststatuscode"
+                }
+              }
+            },
+            "If_request_still_submitted": {
+              "runAfter": {
+                "Get_request_after_timeout": [
+                  "Succeeded"
+                ]
+              },
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@body('Get_request_after_timeout')?['pl_requeststatuscode']",
+                  "提出中"
+                ]
+              },
+              "actions": {
+                "Cancel_expired_request": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord"
+                    },
+                    "parameters": {
+                      "entityName": "pl_requests",
+                      "recordId": "@body('Get_approval_link')?['_pl_requestlookup_value']",
+                      "item": {
+                        "pl_requeststatuscode": "取消",
+                        "pl_cancellationreason": "承認依頼に21日間応答がなかったため、自動で取り消しました。"
+                      }
+                    }
+                  }
+                },
+                "End_after_expiry_cancel": {
+                  "runAfter": {
+                    "Cancel_expired_request": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "Terminate",
+                  "inputs": {
+                    "runStatus": "Succeeded"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Skip_expired_not_submitted": {
+                    "runAfter": {},
+                    "type": "Compose",
+                    "inputs": "申請は提出中ではないため、期限切れの取消を行わない。"
+                  },
+                  "End_after_expiry_skip": {
+                    "runAfter": {
+                      "Skip_expired_not_submitted": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "Terminate",
+                    "inputs": {
+                      "runStatus": "Succeeded"
+                    }
+                  }
+                }
+              }
+            },
+            "List_partnerledger_app": {
+              "runAfter": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords"
+                },
+                "parameters": {
+                  "entityName": "canvasapps",
+                  "$select": "appopenuri",
+                  "$filter": "name eq 'pl_partnerledger_b51b4'",
+                  "$top": 1
+                }
+              }
+            },
+            "Compose_app_uri": {
+              "runAfter": {
+                "List_partnerledger_app": [
+                  "Succeeded",
+                  "Failed",
+                  "TimedOut",
+                  "Skipped"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@coalesce(first(coalesce(body('List_partnerledger_app')?['value'], json('[]')))?['appopenuri'], '')"
+            },
+            "Compose_app_link": {
+              "runAfter": {
+                "Compose_app_uri": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@if(empty(outputs('Compose_app_uri')), '', concat(first(split(outputs('Compose_app_uri'), '&sourcetime=')), if(contains(outputs('Compose_app_uri'), '?'), '&', '?'), 'requestId=', body('Get_approval_link')?['_pl_requestlookup_value']))"
+            },
+            "Get_approver_team": {
+              "runAfter": {
+                "Get_request": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem"
+                },
+                "parameters": {
+                  "entityName": "teams",
+                  "recordId": "@body('Get_request')?['_pl_approverteamlookup_value']",
+                  "$select": "azureactivedirectoryobjectid"
+                }
+              }
+            },
+            "List_approver_members": {
+              "runAfter": {
+                "Get_approver_team": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365groups",
+                  "connectionName": "shared_office365groups",
+                  "operationId": "ListGroupMembers"
+                },
+                "parameters": {
+                  "groupId": "@body('Get_approver_team')?['azureactivedirectoryobjectid']",
+                  "$top": 999
+                }
+              }
+            },
+            "Filter_approver_members": {
+              "runAfter": {
+                "List_approver_members": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@coalesce(body('List_approver_members')?['value'], json('[]'))",
+                "where": "@and(not(contains(toLower(coalesce(item()?['userPrincipalName'], '')), '#ext#')), not(empty(coalesce(item()?['mail'], item()?['userPrincipalName'], ''))))"
+              }
+            },
+            "Select_approver_addresses": {
+              "runAfter": {
+                "Filter_approver_members": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@body('Filter_approver_members')",
+                "select": "@toLower(coalesce(item()?['mail'], item()?['userPrincipalName']))"
+              }
+            },
+            "If_members_found": {
+              "runAfter": {
+                "Select_approver_addresses": [
+                  "Succeeded"
+                ]
+              },
+              "type": "If",
+              "expression": {
+                "greater": [
+                  "@length(body('Select_approver_addresses'))",
+                  0
+                ]
+              },
+              "actions": {
+                "Set_individual_assignees": {
+                  "runAfter": {},
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "approval_assignees",
+                    "value": "@join(union(body('Select_approver_addresses'), body('Select_approver_addresses')), ';')"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              }
+            },
+            "Check_assignee_fallback": {
+              "runAfter": {
+                "If_members_found": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped",
+                  "TimedOut"
+                ]
+              },
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@variables('approval_assignees')",
+                  "@trim(coalesce(parameters('pl_ApprovalGroupAddress'),''))"
+                ]
+              },
+              "actions": {
+                "Get_operator_for_fallback": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords"
+                    },
+                    "parameters": {
+                      "entityName": "systemusers",
+                      "fetchXml": "<fetch top='1'><entity name='systemuser'><attribute name='internalemailaddress'/><filter><condition attribute='systemuserid' operator='eq-userid'/></filter></entity></fetch>"
+                    }
+                  }
+                },
+                "Notify_operator_group_fallback": {
+                  "runAfter": {
+                    "Get_operator_for_fallback": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                      "connectionName": "shared_office365",
+                      "operationId": "SendEmailV2"
+                    },
+                    "parameters": {
+                      "emailMessage/To": "@{first(body('Get_operator_for_fallback')?['value'])?['internalemailaddress']}",
+                      "emailMessage/Subject": "@concat('[PartnerLedger] 承認依頼をグループあてに送りました：', coalesce(body('Get_request')?['pl_name'], ''))",
+                      "emailMessage/Body": "@concat('<p>承認者一人ひとりへ送れなかったため、承認依頼を承認グループのアドレスへ送りました。このメールの中では承認できず、Teamsの通知も出ません。</p>', '<p>申請：', replace(replace(replace(coalesce(body('Get_request')?['pl_name'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '<br>承認者チームの読み取り：', coalesce(actions('Get_approver_team')?['status'], ''), '<br>メンバーの読み取り：', coalesce(actions('List_approver_members')?['status'], ''), '</p>', '<p>Office 365 Groupsの接続と、承認者グループにゲスト以外のメンバーがいるかを確認してください。</p>')",
+                      "emailMessage/Importance": "Normal"
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              }
+            },
+            "Handle_approval_not_created": {
+              "runAfter": {
+                "Start_group_approval": [
+                  "Failed"
+                ]
+              },
+              "type": "Scope",
+              "actions": {
+                "Get_request_after_failure": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "GetItem"
+                    },
+                    "parameters": {
+                      "entityName": "pl_requests",
+                      "recordId": "@body('Get_approval_link')?['_pl_requestlookup_value']",
+                      "$select": "pl_requestid,pl_name,pl_requeststatuscode"
+                    }
+                  }
+                },
+                "If_request_submitted_after_failure": {
+                  "runAfter": {
+                    "Get_request_after_failure": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "If",
+                  "expression": {
+                    "equals": [
+                      "@body('Get_request_after_failure')?['pl_requeststatuscode']",
+                      "提出中"
+                    ]
+                  },
+                  "actions": {
+                    "Cancel_request_approval_not_created": {
+                      "runAfter": {},
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord"
+                        },
+                        "parameters": {
+                          "entityName": "pl_requests",
+                          "recordId": "@body('Get_approval_link')?['_pl_requestlookup_value']",
+                          "item": {
+                            "pl_requeststatuscode": "取消",
+                            "pl_cancellationreason": "承認依頼を作れなかったため、自動で取り消しました。もう一度申請してください。続くときは管理者に連絡してください。"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  }
+                },
+                "Get_operator_for_failure": {
+                  "runAfter": {
+                    "If_request_submitted_after_failure": [
+                      "Succeeded",
+                      "Failed",
+                      "Skipped",
+                      "TimedOut"
+                    ]
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords"
+                    },
+                    "parameters": {
+                      "entityName": "systemusers",
+                      "fetchXml": "<fetch top='1'><entity name='systemuser'><attribute name='internalemailaddress'/><filter><condition attribute='systemuserid' operator='eq-userid'/></filter></entity></fetch>"
+                    }
+                  }
+                },
+                "Notify_operator_approval_not_created": {
+                  "runAfter": {
+                    "Get_operator_for_failure": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                      "connectionName": "shared_office365",
+                      "operationId": "SendEmailV2"
+                    },
+                    "parameters": {
+                      "emailMessage/To": "@{first(body('Get_operator_for_failure')?['value'])?['internalemailaddress']}",
+                      "emailMessage/Subject": "@concat('[PartnerLedger] 承認依頼を作れませんでした：', coalesce(body('Get_request')?['pl_name'], ''))",
+                      "emailMessage/Body": "@concat('<p>承認依頼を作れなかったため、申請を自動で取り消しました（申請者は出し直せます）。</p>', '<p>申請：', replace(replace(replace(coalesce(body('Get_request')?['pl_name'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '<br>取消の処理：', coalesce(actions('If_request_submitted_after_failure')?['status'], ''), '<br>宛先：', replace(replace(replace(coalesce(variables('approval_assignees'), ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '<br>エラー：', replace(replace(replace(coalesce(string(actions('Start_group_approval')?['error']?['message']), ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '</p>', '<p>承認者グループのメンバーと、承認の接続を確認してください。</p>')",
+                      "emailMessage/Importance": "High"
+                    }
+                  }
+                },
+                "End_after_approval_not_created": {
+                  "runAfter": {
+                    "Notify_operator_approval_not_created": [
+                      "Succeeded",
+                      "Failed",
+                      "Skipped",
+                      "TimedOut"
+                    ]
+                  },
+                  "type": "Terminate",
+                  "inputs": {
+                    "runStatus": "Failed",
+                    "runError": {
+                      "code": "PartnerLedger.ApprovalNotCreated",
+                      "message": "The approval could not be created; the submitted request was cancelled and the operator was emailed."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Get_approval_link": [
+              "Succeeded"
+            ],
+            "Init_approval_assignees": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {}
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Get_approval_link')?['pl_approvalsourcecode']",
+                  "PowerAutomateGroup"
+                ]
+              },
+              {
+                "equals": [
+                  "@body('Get_approval_link')?['pl_linkstatuscode']",
+                  "送信待ち"
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@coalesce(body('Get_approval_link')?['pl_externalrequestkey'],'')",
+                    ""
+                  ]
+                }
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@coalesce(body('Get_approval_link')?['_pl_requestlookup_value'],'')",
+                    ""
+                  ]
+                }
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@coalesce(body('Get_approval_link')?['_pl_submissionversionlookup_value'],'')",
+                    ""
+                  ]
+                }
+              }
+            ]
+          },
+          "type": "If"
+        },
+        "Init_approval_assignees": {
+          "runAfter": {},
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "approval_assignees",
+                "type": "string",
+                "value": "@{trim(coalesce(parameters('pl_ApprovalGroupAddress'),''))}"
+              }
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

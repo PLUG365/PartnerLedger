@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{0ee1aae6-59dc-4797-85bf-59a616a91460}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{81c99d4f-612a-455d-b4de-565c8193de71}" IsUserDefined="1">
+          <labels>
+            <label description="全般" languagecode="1041" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{d62278b3-e38c-4476-8a34-a1fcdc80f769}">
+                  <labels>
+                    <label description="全般" languagecode="1041" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{5524217a-d7a2-4457-8a2c-8764323eb55a}">
+                        <labels>
+                          <label description="Name" languagecode="1041" />
+                          <label description="Name" languagecode="1033" />
+                        </labels>
+                        <control id="pl_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pl_name" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{dad00300-278d-42a2-9234-7bab77486ef1}">
+                        <labels>
+                          <label description="所有者" languagecode="1041" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9c890e76-5a32-4c94-9e47-66728d3b06d9}">
+                        <labels>
+                          <label description="DisplayOrder" languagecode="1041" />
+                          <label description="DisplayOrder" languagecode="1033" />
+                        </labels>
+                        <control id="pl_displayorder" classid="{c6d124ca-7eda-4a60-aea9-7fb8d318b68f}" datafieldname="pl_displayorder" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6a69123f-9d99-4f77-a85f-a6a7d7a87403}">
+                        <labels>
+                          <label description="Selectable" languagecode="1033" />
+                          <label description="Selectable" languagecode="1041" />
+                        </labels>
+                        <control id="pl_selectable" classid="{67fac785-cd58-4f9f-abb3-4b7ddc6ed5ed}" datafieldname="pl_selectable" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{65ca9089-ca7a-468e-af1c-9e316c2f5c0f}">
+                        <labels>
+                          <label description="LifecycleCode" languagecode="1041" />
+                          <label description="LifecycleCode" languagecode="1033" />
+                        </labels>
+                        <control id="pl_lifecyclecode" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="pl_lifecyclecode" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="情報" languagecode="1041" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="このエンティティ用のフォームです。" languagecode="1041" />
+    </Descriptions>
+  </systemform>
+</forms>

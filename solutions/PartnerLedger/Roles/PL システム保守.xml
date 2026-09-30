@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Role id="{cbc915a8-0aae-f111-aaac-e4fb1eff79c7}" name="PL システム保守" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsCustomizable>1</IsCustomizable>
+  <IsAutoAssigned>0</IsAutoAssigned>
+  <Description>PartnerLedger専用。移送先でSolution移送者の人間実行主体へ割り当てる。利用者・承認者の業務要求をInitiating Userで認可した後の限定Plugin副作用と定期処理を担う。環境変数は読取のみ。</Description>
+  <RolePrivileges>
+    <RolePrivilege name="prvAppendpl_ApprovalLink" level="Global" />
+    <RolePrivilege name="prvAppendpl_BulletinPost" level="Global" />
+    <RolePrivilege name="prvAppendpl_BusinessCardReview" level="Global" />
+    <RolePrivilege name="prvAppendpl_CaptureBatch" level="Global" />
+    <RolePrivilege name="prvAppendpl_CardCapture" level="Global" />
+    <RolePrivilege name="prvAppendpl_CardInputVersion" level="Global" />
+    <RolePrivilege name="prvAppendpl_Contact" level="Global" />
+    <RolePrivilege name="prvAppendpl_Contract" level="Global" />
+    <RolePrivilege name="prvAppendpl_Notification" level="Global" />
+    <RolePrivilege name="prvAppendpl_OcrJob" level="Global" />
+    <RolePrivilege name="prvAppendpl_OperationLog" level="Global" />
+    <RolePrivilege name="prvAppendpl_Partner" level="Global" />
+    <RolePrivilege name="prvAppendpl_Request" level="Global" />
+    <RolePrivilege name="prvAppendpl_Settings" level="Global" />
+    <RolePrivilege name="prvAppendTopl_ApprovalLink" level="Global" />
+    <RolePrivilege name="prvAppendTopl_BulletinPost" level="Global" />
+    <RolePrivilege name="prvAppendTopl_BusinessCardReview" level="Global" />
+    <RolePrivilege name="prvAppendTopl_CaptureBatch" level="Global" />
+    <RolePrivilege name="prvAppendTopl_CardCapture" level="Global" />
+    <RolePrivilege name="prvAppendTopl_CardInputVersion" level="Global" />
+    <RolePrivilege name="prvAppendTopl_Contact" level="Global" />
+    <RolePrivilege name="prvAppendTopl_Contract" level="Global" />
+    <RolePrivilege name="prvAppendTopl_Notification" level="Global" />
+    <RolePrivilege name="prvAppendTopl_OcrJob" level="Global" />
+    <RolePrivilege name="prvAppendTopl_OperationLog" level="Global" />
+    <RolePrivilege name="prvAppendTopl_Partner" level="Global" />
+    <RolePrivilege name="prvAppendTopl_Request" level="Global" />
+    <RolePrivilege name="prvAppendTopl_Settings" level="Global" />
+    <RolePrivilege name="prvCreatepl_ApprovalLink" level="Global" />
+    <RolePrivilege name="prvCreatepl_BulletinPost" level="Global" />
+    <RolePrivilege name="prvCreatepl_BusinessCardReview" level="Global" />
+    <RolePrivilege name="prvCreatepl_CaptureBatch" level="Global" />
+    <RolePrivilege name="prvCreatepl_CardCapture" level="Global" />
+    <RolePrivilege name="prvCreatepl_CardInputVersion" level="Global" />
+    <RolePrivilege name="prvCreatepl_Contact" level="Global" />
+    <RolePrivilege name="prvCreatepl_Contract" level="Global" />
+    <RolePrivilege name="prvCreatepl_Notification" level="Global" />
+    <RolePrivilege name="prvCreatepl_OcrJob" level="Global" />
+    <RolePrivilege name="prvCreatepl_OperationLog" level="Global" />
+    <RolePrivilege name="prvCreatepl_Partner" level="Global" />
+    <RolePrivilege name="prvCreatepl_Request" level="Global" />
+    <RolePrivilege name="prvCreatepl_Settings" level="Global" />
+    <RolePrivilege name="prvReadpl_ApprovalLink" level="Global" />
+    <RolePrivilege name="prvReadpl_BulletinPost" level="Global" />
+    <RolePrivilege name="prvReadpl_BusinessCardReview" level="Global" />
+    <RolePrivilege name="prvReadpl_CaptureBatch" level="Global" />
+    <RolePrivilege name="prvReadpl_CardCapture" level="Global" />
+    <RolePrivilege name="prvReadpl_CardInputVersion" level="Global" />
+    <RolePrivilege name="prvReadpl_Contact" level="Global" />
+    <RolePrivilege name="prvReadpl_Contract" level="Global" />
+    <RolePrivilege name="prvReadpl_ContractType" level="Global" />
+    <RolePrivilege name="prvReadpl_Notification" level="Global" />
+    <RolePrivilege name="prvReadpl_OcrJob" level="Global" />
+    <RolePrivilege name="prvReadpl_OperationLog" level="Global" />
+    <RolePrivilege name="prvReadpl_Partner" level="Global" />
+    <RolePrivilege name="prvReadpl_Request" level="Global" />
+    <RolePrivilege name="prvReadpl_Settings" level="Global" />
+    <RolePrivilege name="prvSharepl_Contact" level="Global" />
+    <RolePrivilege name="prvSharepl_Contract" level="Global" />
+    <RolePrivilege name="prvSharepl_Partner" level="Global" />
+    <RolePrivilege name="prvWritepl_ApprovalLink" level="Global" />
+    <RolePrivilege name="prvWritepl_BusinessCardReview" level="Global" />
+    <RolePrivilege name="prvWritepl_CaptureBatch" level="Global" />
+    <RolePrivilege name="prvWritepl_CardCapture" level="Global" />
+    <RolePrivilege name="prvWritepl_CardInputVersion" level="Global" />
+    <RolePrivilege name="prvWritepl_Contact" level="Global" />
+    <RolePrivilege name="prvWritepl_Contract" level="Global" />
+    <RolePrivilege name="prvWritepl_Notification" level="Global" />
+    <RolePrivilege name="prvWritepl_OcrJob" level="Global" />
+    <RolePrivilege name="prvWritepl_OperationLog" level="Global" />
+    <RolePrivilege name="prvWritepl_Partner" level="Global" />
+    <RolePrivilege name="prvWritepl_Request" level="Global" />
+    <RolePrivilege name="prvWritepl_Settings" level="Global" />
+  </RolePrivileges>
+</Role>

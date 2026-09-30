@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="PartnerLedger.Plugins.Tests/PartnerLedger.Plugins.Tests.csproj" />
+  <Project Path="PartnerLedger.Plugins/PartnerLedger.Plugins.csproj" />
+</Solution>
