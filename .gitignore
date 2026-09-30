@@ -10,9 +10,11 @@ playwright-report/
 !.env.example
 .mcp.json
 .codex/
-.power/
+# 環境固有のPower Appsの設定（環境ID・アプリID）。
 power.config.json
-apps/pc/src/generated/
+# Power Apps CLIの作業領域。表の定義（schemas）と生成コード（apps/pc/src/generated）は環境固有の値を含まないので管理する（2026-09-30、公開準備）。
+apps/pc/.power/*
+!apps/pc/.power/schemas/
 *.log
 .artifacts/
 plugins/**/bin/

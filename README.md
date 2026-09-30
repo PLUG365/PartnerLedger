@@ -29,11 +29,12 @@ PC でもスマホでも、同じアプリをブラウザ（または Power Apps
 
 ## 導入
 
-Dataverse のある Power Platform 環境に、PartnerLedger のマネージドソリューション（zip）をインポートして使います。手順は [インポート手順](docs/import-guide.md) にあります（承認グループの用意、接続、インポート、ロールの割り当て、受入の確認まで）。配布用の zip の入手方法は準備中です。
+Dataverse のある Power Platform 環境に、PartnerLedger のマネージドソリューション（zip）をインポートして使います。zip は GitHub の [Releases](../../releases) からダウンロードします。手順は [インポート手順](docs/import-guide.md) にあります（承認グループの用意、接続、インポート、ロールの割り当て、受入の確認まで）。
 
 ## 資料
 
 - [インポート手順](docs/import-guide.md)：導入と運用の注意
+- [改造・開発の手順](docs/development.md)：自分の環境で改造するとき
 - [説明書](docs/user-manual.md)：利用者・承認者・管理者向けの使い方
 - [要件定義](docs/requirements.md)：製品の要件と受入条件
 - [データ設計](docs/data-model-design.md)・[セキュリティロール](docs/security-role-matrix.md)：表・権限の設計
@@ -53,9 +54,11 @@ npm run dev
 npm run check
 ```
 
-`npm run check` は、公開前の検査（環境の URL やテナント固有のアドレスなどが入っていないか）、型、lint、テスト、ビルドを順に行います。プラグインは `plugins` で `dotnet test` を実行します。
+`npm run check` は、公開前の検査（環境の URL やテナント固有のアドレスなどが入っていないか）、型、lint、テスト、ビルドを順に行います。環境につながなくても通ります。プラグインは `plugins` で `dotnet test` を実行します。
 
-Code App を自分の開発環境につなぐ方法は [apps/pc の README](apps/pc/README.md) にあります。
+Windows では、ファイル名の長さの上限で複製に失敗することがあります。`git clone -c core.longpaths=true` で複製するか、短いフォルダに複製してください。
+
+自分の環境で改造する手順（開発環境への導入、画面・プラグイン・フローの直し方、配布用の zip の作り方）は [改造・開発の手順](docs/development.md) にあります。
 
 ## ライセンス
 
@@ -71,6 +74,6 @@ PartnerLedger is a Power Platform app for managing business partners, their cont
 - **Approvals, notifications, business cards**: five Power Automate flows. Approvals are assigned to each member of an approver group, so they can be approved inside Outlook and Teams. Business cards are read with the AI Builder business card reader.
 - **Security**: four security roles plus per-partner sharing. No dedicated application user is required.
 
-To install, import the managed solution into an environment with Dataverse and follow the [import guide](docs/import-guide.md) (in Japanese). For development, run `npm ci`, `npm run dev` and `npm run check` at the repository root.
+To install, download the managed solution from [Releases](../../releases), import it into an environment with Dataverse and follow the [import guide](docs/import-guide.md) (in Japanese). For development, run `npm ci` and `npm run check` at the repository root; see the [development guide](docs/development.md) (in Japanese) to customize the app in your own environment. On Windows, clone with `git clone -c core.longpaths=true` because some solution file names are long.
 
 The documentation is written in Japanese. Licensed under the [MIT License](LICENSE).

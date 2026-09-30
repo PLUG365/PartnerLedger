@@ -1,0 +1,594 @@
+{
+  "name": "pl_partnersharesetting",
+  "title": "取引先共有設定",
+  "schema": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "x-ms-dataverse-entity": true,
+      "x-ms-dataverse-entityset": "pl_partnersharesettings",
+      "x-ms-dataverse-primary-id": "pl_partnersharesettingid",
+      "x-ms-dataverse-primary-name": "pl_name",
+      "properties": {
+        "createdby": {
+          "type": "string",
+          "title": "作成者",
+          "x-ms-dataverse-attribute": "createdby",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "CreatedBy",
+          "x-ms-read-only": true
+        },
+        "createdbyname": {
+          "type": "string",
+          "title": "createdbyname",
+          "x-ms-dataverse-attribute": "createdbyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "CreatedByName",
+          "x-ms-read-only": true,
+          "maxLength": 100
+        },
+        "createdbyyominame": {
+          "type": "string",
+          "title": "createdbyyominame",
+          "x-ms-dataverse-attribute": "createdbyyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "CreatedByYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "createdon": {
+          "type": "string",
+          "title": "作成日",
+          "x-ms-dataverse-attribute": "createdon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "CreatedOn",
+          "x-ms-read-only": true
+        },
+        "createdonbehalfby": {
+          "type": "string",
+          "title": "作成者 (代理)",
+          "x-ms-dataverse-attribute": "createdonbehalfby",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "CreatedOnBehalfBy",
+          "x-ms-read-only": true
+        },
+        "createdonbehalfbyname": {
+          "type": "string",
+          "title": "createdonbehalfbyname",
+          "x-ms-dataverse-attribute": "createdonbehalfbyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "CreatedOnBehalfByName",
+          "x-ms-read-only": true,
+          "maxLength": 100
+        },
+        "createdonbehalfbyyominame": {
+          "type": "string",
+          "title": "createdonbehalfbyyominame",
+          "x-ms-dataverse-attribute": "createdonbehalfbyyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "CreatedOnBehalfByYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "importsequencenumber": {
+          "type": "string",
+          "title": "インポート シーケンス番号",
+          "x-ms-dataverse-attribute": "importsequencenumber",
+          "x-ms-dataverse-type": "IntegerType",
+          "x-ms-schema-name": "ImportSequenceNumber"
+        },
+        "modifiedby": {
+          "type": "string",
+          "title": "修正者",
+          "x-ms-dataverse-attribute": "modifiedby",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "ModifiedBy",
+          "x-ms-read-only": true
+        },
+        "modifiedbyname": {
+          "type": "string",
+          "title": "modifiedbyname",
+          "x-ms-dataverse-attribute": "modifiedbyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "ModifiedByName",
+          "x-ms-read-only": true,
+          "maxLength": 100
+        },
+        "modifiedbyyominame": {
+          "type": "string",
+          "title": "modifiedbyyominame",
+          "x-ms-dataverse-attribute": "modifiedbyyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "ModifiedByYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "modifiedon": {
+          "type": "string",
+          "title": "修正日",
+          "x-ms-dataverse-attribute": "modifiedon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "ModifiedOn",
+          "x-ms-read-only": true
+        },
+        "modifiedonbehalfby": {
+          "type": "string",
+          "title": "修正者 (代理)",
+          "x-ms-dataverse-attribute": "modifiedonbehalfby",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "ModifiedOnBehalfBy",
+          "x-ms-read-only": true
+        },
+        "modifiedonbehalfbyname": {
+          "type": "string",
+          "title": "modifiedonbehalfbyname",
+          "x-ms-dataverse-attribute": "modifiedonbehalfbyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "ModifiedOnBehalfByName",
+          "x-ms-read-only": true,
+          "maxLength": 100
+        },
+        "modifiedonbehalfbyyominame": {
+          "type": "string",
+          "title": "modifiedonbehalfbyyominame",
+          "x-ms-dataverse-attribute": "modifiedonbehalfbyyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "ModifiedOnBehalfByYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "overriddencreatedon": {
+          "type": "string",
+          "title": "レコード作成日",
+          "x-ms-dataverse-attribute": "overriddencreatedon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "OverriddenCreatedOn"
+        },
+        "ownerid": {
+          "type": "string",
+          "title": "所有者",
+          "x-ms-dataverse-attribute": "ownerid",
+          "x-ms-dataverse-type": "OwnerType",
+          "x-ms-schema-name": "OwnerId",
+          "required": true
+        },
+        "owneridname": {
+          "type": "string",
+          "title": "owneridname",
+          "x-ms-dataverse-attribute": "owneridname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "OwnerIdName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "owneridtype": {
+          "type": "string",
+          "title": "owneridtype",
+          "x-ms-dataverse-attribute": "owneridtype",
+          "x-ms-dataverse-type": "EntityNameType",
+          "x-ms-schema-name": "OwnerIdType",
+          "required": true
+        },
+        "owneridyominame": {
+          "type": "string",
+          "title": "owneridyominame",
+          "x-ms-dataverse-attribute": "owneridyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "OwnerIdYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "owningbusinessunit": {
+          "type": "string",
+          "title": "所属部署",
+          "x-ms-dataverse-attribute": "owningbusinessunit",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "OwningBusinessUnit",
+          "x-ms-read-only": true
+        },
+        "owningbusinessunitname": {
+          "type": "string",
+          "title": "owningbusinessunitname",
+          "x-ms-dataverse-attribute": "owningbusinessunitname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "OwningBusinessUnitName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "owningteam": {
+          "type": "string",
+          "title": "所有チーム",
+          "x-ms-dataverse-attribute": "owningteam",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "OwningTeam",
+          "x-ms-read-only": true
+        },
+        "owninguser": {
+          "type": "string",
+          "title": "所有ユーザー",
+          "x-ms-dataverse-attribute": "owninguser",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "OwningUser",
+          "x-ms-read-only": true
+        },
+        "pl_accesslevelcode": {
+          "type": "string",
+          "title": "付与アクセス",
+          "x-ms-dataverse-attribute": "pl_accesslevelcode",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "pl_AccessLevelCode",
+          "required": true,
+          "enum": [
+            "閲覧",
+            "編集"
+          ],
+          "x-ms-enum-values": [
+            100000000,
+            100000001
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "8430d61f-ecaf-f111-aaac-e4fb1eff79c7",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "付与アクセス",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "pl_accesslevelcodename": {
+          "type": "string",
+          "title": "pl_accesslevelcodename",
+          "x-ms-dataverse-attribute": "pl_accesslevelcodename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "pl_accesslevelcodeName",
+          "x-ms-read-only": true
+        },
+        "pl_contenthash": {
+          "type": "string",
+          "title": "設定内容ハッシュ",
+          "x-ms-dataverse-attribute": "pl_contenthash",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "pl_ContentHash",
+          "required": true,
+          "maxLength": 128
+        },
+        "pl_ismanagedprojection": {
+          "type": "string",
+          "title": "PL投影管理",
+          "x-ms-dataverse-attribute": "pl_ismanagedprojection",
+          "x-ms-dataverse-type": "BooleanType",
+          "x-ms-schema-name": "pl_IsManagedProjection",
+          "required": true,
+          "enum": [
+            "未照合",
+            "PL管理"
+          ],
+          "x-ms-enum-values": [
+            0,
+            1
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "6505d2ff-29b0-f111-aaac-e4fb1eff79c7",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "PL投影管理",
+          "x-ms-optionSetType": "Boolean"
+        },
+        "pl_ismanagedprojectionname": {
+          "type": "string",
+          "title": "pl_ismanagedprojectionname",
+          "x-ms-dataverse-attribute": "pl_ismanagedprojectionname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "pl_ismanagedprojectionName",
+          "x-ms-read-only": true
+        },
+        "pl_isprotectedmanagementpath": {
+          "type": "string",
+          "title": "保護された管理経路",
+          "x-ms-dataverse-attribute": "pl_isprotectedmanagementpath",
+          "x-ms-dataverse-type": "BooleanType",
+          "x-ms-schema-name": "pl_IsProtectedManagementPath",
+          "required": true,
+          "enum": [
+            "通常",
+            "保護"
+          ],
+          "x-ms-enum-values": [
+            0,
+            1
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "bb25d825-ecaf-f111-aaac-e4fb1eff79c7",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "保護された管理経路",
+          "x-ms-optionSetType": "Boolean"
+        },
+        "pl_isprotectedmanagementpathname": {
+          "type": "string",
+          "title": "pl_isprotectedmanagementpathname",
+          "x-ms-dataverse-attribute": "pl_isprotectedmanagementpathname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "pl_isprotectedmanagementpathName",
+          "x-ms-read-only": true
+        },
+        "pl_name": {
+          "type": "string",
+          "title": "共有設定名",
+          "x-ms-dataverse-attribute": "pl_name",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "pl_Name",
+          "x-ms-dataverse-primary-name": true,
+          "maxLength": 200
+        },
+        "pl_partnerlookup": {
+          "type": "string",
+          "title": "取引先",
+          "x-ms-dataverse-attribute": "pl_partnerlookup",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "pl_PartnerLookup",
+          "required": true
+        },
+        "pl_partnerlookupname": {
+          "type": "string",
+          "title": "pl_partnerlookupname",
+          "x-ms-dataverse-attribute": "pl_partnerlookupname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "pl_PartnerLookupName",
+          "x-ms-read-only": true,
+          "maxLength": 200
+        },
+        "pl_partnersharesettingid": {
+          "type": "string",
+          "title": "取引先共有設定",
+          "x-ms-dataverse-attribute": "pl_partnersharesettingid",
+          "x-ms-dataverse-type": "UniqueidentifierType",
+          "x-ms-schema-name": "pl_PartnerShareSettingId",
+          "x-ms-dataverse-primary-id": true,
+          "required": true,
+          "x-ms-keyType": "primary"
+        },
+        "pl_principalkindcode": {
+          "type": "string",
+          "title": "主体種別",
+          "x-ms-dataverse-attribute": "pl_principalkindcode",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "pl_PrincipalKindCode",
+          "required": true,
+          "enum": [
+            "個人",
+            "Team"
+          ],
+          "x-ms-enum-values": [
+            100000000,
+            100000001
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "62d61719-ecaf-f111-aaac-e4fb1eff79c7",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "主体種別",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "pl_principalkindcodename": {
+          "type": "string",
+          "title": "pl_principalkindcodename",
+          "x-ms-dataverse-attribute": "pl_principalkindcodename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "pl_principalkindcodeName",
+          "x-ms-read-only": true
+        },
+        "pl_requestkey": {
+          "type": "string",
+          "title": "要求キー",
+          "x-ms-dataverse-attribute": "pl_requestkey",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "pl_RequestKey",
+          "required": true,
+          "maxLength": 200
+        },
+        "pl_settingstatuscode": {
+          "type": "string",
+          "title": "設定状態",
+          "x-ms-dataverse-attribute": "pl_settingstatuscode",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "pl_SettingStatusCode",
+          "required": true,
+          "enum": [
+            "有効",
+            "取消"
+          ],
+          "x-ms-enum-values": [
+            100000000,
+            100000001
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "9230d61f-ecaf-f111-aaac-e4fb1eff79c7",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "設定状態",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "pl_settingstatuscodename": {
+          "type": "string",
+          "title": "pl_settingstatuscodename",
+          "x-ms-dataverse-attribute": "pl_settingstatuscodename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "pl_settingstatuscodeName",
+          "x-ms-read-only": true
+        },
+        "pl_teamprincipallookup": {
+          "type": "string",
+          "title": "対象Team",
+          "x-ms-dataverse-attribute": "pl_teamprincipallookup",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "pl_TeamPrincipalLookup"
+        },
+        "pl_teamprincipallookupname": {
+          "type": "string",
+          "title": "pl_teamprincipallookupname",
+          "x-ms-dataverse-attribute": "pl_teamprincipallookupname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "pl_TeamPrincipalLookupName",
+          "x-ms-read-only": true,
+          "maxLength": 160
+        },
+        "pl_teamprincipallookupyominame": {
+          "type": "string",
+          "title": "pl_teamprincipallookupyominame",
+          "x-ms-dataverse-attribute": "pl_teamprincipallookupyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "pl_TeamPrincipalLookupYomiName",
+          "x-ms-read-only": true,
+          "maxLength": 160
+        },
+        "pl_userprincipallookup": {
+          "type": "string",
+          "title": "対象個人",
+          "x-ms-dataverse-attribute": "pl_userprincipallookup",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "pl_UserPrincipalLookup"
+        },
+        "pl_userprincipallookupname": {
+          "type": "string",
+          "title": "pl_userprincipallookupname",
+          "x-ms-dataverse-attribute": "pl_userprincipallookupname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "pl_UserPrincipalLookupName",
+          "x-ms-read-only": true,
+          "maxLength": 200
+        },
+        "pl_userprincipallookupyominame": {
+          "type": "string",
+          "title": "pl_userprincipallookupyominame",
+          "x-ms-dataverse-attribute": "pl_userprincipallookupyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "pl_UserPrincipalLookupYomiName",
+          "x-ms-read-only": true,
+          "maxLength": 200
+        },
+        "statecode": {
+          "type": "string",
+          "title": "状態",
+          "x-ms-dataverse-attribute": "statecode",
+          "x-ms-dataverse-type": "StateType",
+          "x-ms-schema-name": "statecode",
+          "required": true,
+          "enum": [
+            "アクティブ",
+            "非アクティブ"
+          ],
+          "x-ms-enum-values": [
+            0,
+            1
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "55a01cd2-ebaf-f111-aaac-e4fb1eff79c7",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "状態",
+          "x-ms-optionSetType": "State"
+        },
+        "statecodename": {
+          "type": "string",
+          "title": "statecodename",
+          "x-ms-dataverse-attribute": "statecodename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "statecodeName",
+          "x-ms-read-only": true
+        },
+        "statuscode": {
+          "type": "string",
+          "title": "ステータス",
+          "x-ms-dataverse-attribute": "statuscode",
+          "x-ms-dataverse-type": "StatusType",
+          "x-ms-schema-name": "statuscode",
+          "enum": [
+            "アクティブ",
+            "非アクティブ"
+          ],
+          "x-ms-enum-values": [
+            1,
+            2
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "5fa01cd2-ebaf-f111-aaac-e4fb1eff79c7",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "ステータス",
+          "x-ms-optionSetType": "Status"
+        },
+        "statuscodename": {
+          "type": "string",
+          "title": "statuscodename",
+          "x-ms-dataverse-attribute": "statuscodename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "statuscodeName",
+          "x-ms-read-only": true
+        },
+        "timezoneruleversionnumber": {
+          "type": "string",
+          "title": "タイム ゾーン規則のバージョン番号",
+          "x-ms-dataverse-attribute": "timezoneruleversionnumber",
+          "x-ms-dataverse-type": "IntegerType",
+          "x-ms-schema-name": "TimeZoneRuleVersionNumber"
+        },
+        "utcconversiontimezonecode": {
+          "type": "string",
+          "title": "UTC 変換タイム ゾーン コード",
+          "x-ms-dataverse-attribute": "utcconversiontimezonecode",
+          "x-ms-dataverse-type": "IntegerType",
+          "x-ms-schema-name": "UTCConversionTimeZoneCode"
+        },
+        "versionnumber": {
+          "type": "string",
+          "title": "バージョン番号",
+          "x-ms-dataverse-attribute": "versionnumber",
+          "x-ms-dataverse-type": "BigIntType",
+          "x-ms-schema-name": "VersionNumber",
+          "x-ms-read-only": true
+        }
+      },
+      "required": [
+        "createdbyyominame",
+        "createdonbehalfbyyominame",
+        "modifiedbyyominame",
+        "modifiedonbehalfbyyominame",
+        "ownerid",
+        "owneridname",
+        "owneridtype",
+        "owneridyominame",
+        "owningbusinessunitname",
+        "pl_accesslevelcode",
+        "pl_contenthash",
+        "pl_ismanagedprojection",
+        "pl_isprotectedmanagementpath",
+        "pl_partnerlookup",
+        "pl_partnersharesettingid",
+        "pl_principalkindcode",
+        "pl_requestkey",
+        "pl_settingstatuscode",
+        "statecode"
+      ]
+    }
+  }
+}
